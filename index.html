@@ -3,632 +3,656 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RC Crawler Club — Панель управления</title>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
+<title>RC Crawler Club — Офроад квесты на радиоуправляемых внедорожниках</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --red:#CC2200; --red-glow:rgba(204,34,0,0.1);
-    --bg:#0A0A0A; --bg2:#111; --bg3:#181818; --bg4:#1E1E1E;
-    --border:rgba(255,255,255,0.08); --border-hot:rgba(204,34,0,0.35);
-    --text:#F0EDE8; --muted:#888880; --dim:#444440;
-    --accent:#E8C060; --green:#4CAF50;
+    --red: #CC2200;
+    --red-glow: rgba(204,34,0,0.15);
+    --bg: #0A0A0A;
+    --bg2: #111111;
+    --bg3: #181818;
+    --border: rgba(255,255,255,0.08);
+    --border-hot: rgba(204,34,0,0.4);
+    --text: #F0EDE8;
+    --text-muted: #888880;
+    --text-dim: #444440;
+    --accent: #E8C060;
   }
-  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--bg);color:var(--text);font-family:'Roboto Condensed',sans-serif;font-size:15px;line-height:1.5;min-height:100vh;}
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body { background: var(--bg); color: var(--text); font-family: 'Roboto Condensed', sans-serif; font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+  img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
-  /* LOGIN */
-  .login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;
-    background-image:repeating-linear-gradient(0deg,transparent,transparent 79px,rgba(255,255,255,0.01) 79px,rgba(255,255,255,0.01) 80px),
-    repeating-linear-gradient(90deg,transparent,transparent 79px,rgba(255,255,255,0.01) 79px,rgba(255,255,255,0.01) 80px);}
-  .login-box{width:100%;max-width:340px;padding:0 20px;}
-  .login-logo{font-family:'Oswald',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:32px;}
-  .login-logo span{color:var(--red);}
-  .login-title{font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;text-transform:uppercase;margin-bottom:4px;}
-  .login-sub{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;margin-bottom:28px;}
-  .f{margin-bottom:12px;}
-  .f label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.14em;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;}
-  .f input,.f textarea,.f select{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Roboto Condensed',sans-serif;font-size:14px;padding:9px 11px;outline:none;transition:border-color .2s;-webkit-appearance:none;border-radius:0;}
-  .f input:focus,.f textarea:focus,.f select:focus{border-color:var(--red);}
-  .f textarea{resize:vertical;min-height:80px;}
-  .btn-login{width:100%;background:var(--red);border:2px solid var(--red);color:#fff;font-family:'Oswald',sans-serif;font-size:14px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:12px;cursor:pointer;transition:all .2s;margin-top:4px;}
-  .btn-login:hover{background:transparent;color:var(--red);}
-  .login-err{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);margin-top:10px;display:none;}
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    background: rgba(10,10,10,0.94); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    height: 56px; display: flex; align-items: center; padding: 0 20px; gap: 16px;
+  }
+  .nav-logo { font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--text); flex: 1; }
+  .nav-logo span { color: var(--red); }
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--text-muted); text-decoration: none; text-transform: uppercase; transition: color .2s; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: var(--red); text-decoration: none; text-transform: uppercase; border: 1px solid var(--red); padding: 6px 12px; white-space: nowrap; transition: all .2s; flex-shrink: 0; }
+  .nav-cta:hover { background: var(--red); color: #fff; }
+  .nav-burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; border: none; background: none; }
+  .nav-burger span { display: block; width: 22px; height: 1.5px; background: var(--text); transition: all .3s; }
+  .nav-burger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .nav-burger.open span:nth-child(2) { opacity: 0; }
+  .nav-burger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+  .mobile-menu { display: none; position: fixed; top: 56px; left: 0; right: 0; z-index: 190; background: rgba(10,10,10,0.98); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); flex-direction: column; padding: 16px 20px; }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: var(--text-muted); text-decoration: none; text-transform: uppercase; padding: 13px 0; border-bottom: 1px solid var(--border); transition: color .2s; }
+  .mobile-menu a:last-child { border-bottom: none; }
+  .mobile-menu a:hover { color: var(--text); }
+  .mobile-menu .m-cta { color: var(--red); }
 
-  /* APP */
-  .app{display:none;min-height:100vh;}
-  .sidebar{position:fixed;top:0;left:0;bottom:0;width:212px;z-index:100;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;}
-  .sb-logo{padding:16px 16px 12px;border-bottom:1px solid var(--border);flex-shrink:0;}
-  .sb-logo-t{font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;}
-  .sb-logo-t span{color:var(--red);}
-  .sb-sub{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:0.1em;color:var(--dim);text-transform:uppercase;margin-top:2px;}
-  .sb-nav{padding:8px 0;flex:1;}
-  .sb-sec{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:0.14em;color:var(--dim);text-transform:uppercase;padding:10px 16px 4px;}
-  .sb-item{display:flex;align-items:center;gap:9px;padding:9px 16px;cursor:pointer;transition:all .2s;font-size:13px;color:var(--muted);border-left:2px solid transparent;border-top:none;border-right:none;border-bottom:none;background:none;width:100%;text-align:left;}
-  .sb-item:hover{background:var(--bg3);color:var(--text);}
-  .sb-item.active{background:var(--bg3);color:var(--text);border-left-color:var(--red);}
-  .sb-icon{font-size:13px;width:16px;text-align:center;}
-  .sb-foot{padding:12px 16px;border-top:1px solid var(--border);flex-shrink:0;}
-  .sb-foot button{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.1em;color:var(--dim);text-transform:uppercase;background:none;border:none;cursor:pointer;transition:color .2s;}
-  .sb-foot button:hover{color:var(--red);}
+  /* SHARED */
+  .sec { padding: 64px 20px; }
+  @media (min-width: 768px) { .sec { padding: 96px 48px; } }
+  .label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--red); text-transform: uppercase; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+  .label::before { content: ''; display: block; width: 24px; height: 1px; background: var(--red); }
+  .sec-title { font-family: 'Oswald', sans-serif; font-size: clamp(28px, 6vw, 52px); font-weight: 700; text-transform: uppercase; line-height: 0.95; letter-spacing: -0.01em; }
+  .divider { height: 1px; background: linear-gradient(90deg, transparent, var(--red), transparent); opacity: .25; }
 
-  .main{margin-left:212px;min-height:100vh;}
-  .topbar{height:50px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 22px;gap:12px;position:sticky;top:0;z-index:50;}
-  .topbar-title{font-family:'Oswald',sans-serif;font-size:15px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;flex:1;}
-  .save-btn{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;background:var(--red);color:#fff;border:none;padding:7px 16px;cursor:pointer;transition:opacity .2s;}
-  .save-btn:hover{opacity:.85;}
-  .save-btn:disabled{opacity:.4;cursor:default;}
-  .toast{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.08em;color:var(--green);padding:5px 10px;border:1px solid rgba(76,175,80,.3);background:rgba(76,175,80,.08);opacity:0;transition:opacity .3s;white-space:nowrap;}
-  .toast.show{opacity:1;}
+  /* PHOTO PLACEHOLDER */
+  .photo { background: var(--bg3); border: 1px dashed rgba(255,255,255,0.1); position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+  .photo::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(-45deg, transparent, transparent 12px, rgba(255,255,255,0.012) 12px, rgba(255,255,255,0.012) 13px); }
+  .photo-icon { font-size: 24px; opacity: 0.2; position: relative; z-index: 1; }
+  .photo-label { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.12em; color: var(--text-dim); text-transform: uppercase; text-align: center; position: relative; z-index: 1; padding: 0 12px; line-height: 1.6; }
 
-  .content{padding:22px;}
-  .panel{display:none;}
-  .panel.active{display:block;}
+  /* HERO */
+  .hero { min-height: 100svh; display: grid; grid-template-columns: 1fr; position: relative; overflow: hidden; padding-top: 56px; }
+  @media (min-width: 768px) { .hero { grid-template-columns: 1fr 1fr; } }
+  .hero-grid-bg { position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(255,255,255,0.012) 79px, rgba(255,255,255,0.012) 80px), repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(255,255,255,0.012) 79px, rgba(255,255,255,0.012) 80px); }
+  .hero-photo { height: 260px; order: -1; }
+  @media (min-width: 768px) { .hero-photo { height: auto; order: 0; min-height: 100%; } }
+  .hero-content { display: flex; flex-direction: column; justify-content: flex-end; padding: 36px 20px 80px; position: relative; z-index: 1; }
+  @media (min-width: 768px) { .hero-content { padding: 80px 48px 120px; } }
+  .hero-live { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: var(--red); text-transform: uppercase; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+  .dot { width: 6px; height: 6px; background: var(--red); border-radius: 50%; animation: blink 1.5s ease-in-out infinite; }
+  @keyframes blink { 0%,100%{opacity:1}50%{opacity:.2} }
+  .hero-title { font-family: 'Oswald', sans-serif; font-size: clamp(46px, 11vw, 104px); font-weight: 700; text-transform: uppercase; line-height: 0.88; letter-spacing: -0.01em; margin-bottom: 22px; }
+  .hero-title .r { color: var(--red); }
+  .hero-title .o { -webkit-text-stroke: 1px var(--text); color: transparent; }
+  .hero-sub { font-size: clamp(14px, 2.5vw, 17px); color: var(--text-muted); font-weight: 300; line-height: 1.55; max-width: 440px; margin-bottom: 32px; }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; padding: 12px 26px; display: inline-flex; align-items: center; gap: 8px; transition: all .2s; border: 2px solid transparent; }
+  .btn-red { background: var(--red); color: #fff; border-color: var(--red); }
+  .btn-red:hover { background: transparent; color: var(--red); }
+  .btn-ghost { background: transparent; color: var(--text-muted); border-color: var(--border); font-family: 'IBM Plex Mono', monospace; font-size: 11px; }
+  .btn-ghost:hover { border-color: var(--text-muted); color: var(--text); }
+  .hero-stats { display: flex; border-top: 1px solid var(--border); }
+  @media (min-width: 768px) { .hero-stats { position: absolute; bottom: 0; left: 0; right: 50%; } }
+  .stat { flex: 1; padding: 14px 12px; border-right: 1px solid var(--border); text-align: center; }
+  .stat:last-child { border-right: none; }
+  .stat-n { font-family: 'Oswald', sans-serif; font-size: clamp(20px, 4vw, 26px); font-weight: 700; line-height: 1; }
+  .stat-l { font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase; }
+  .scroll-hint { position: absolute; bottom: 20px; left: 20px; display: flex; align-items: center; gap: 10px; }
+  @media (min-width: 768px) { .scroll-hint { left: 48px; bottom: 60px; } }
+  .sh-line { width: 1px; height: 32px; background: var(--red); opacity: .5; animation: scrollPulse 2s ease-in-out infinite; }
+  @keyframes scrollPulse { 0%,100%{opacity:.5}50%{opacity:.1} }
+  .sh-t { font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.2em; color: var(--text-dim); text-transform: uppercase; writing-mode: vertical-lr; }
 
-  /* CARDS */
-  .card{background:var(--bg2);border:1px solid var(--border);padding:18px 20px;margin-bottom:12px;}
-  .card-title{font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:14px;color:var(--muted);display:flex;align-items:center;gap:8px;}
-  .card-title::before{content:'';display:block;width:12px;height:1px;background:var(--red);}
-  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  @media(max-width:580px){.row2{grid-template-columns:1fr;}}
+  /* ABOUT */
+  .about-grid { display: grid; gap: 40px; margin-top: 44px; }
+  @media (min-width: 768px) { .about-grid { grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; } }
+  .about-photo-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 180px 120px; gap: 4px; }
+  @media (min-width: 768px) { .about-photo-grid { grid-template-rows: 220px 150px; } }
+  .about-photo-grid .photo:first-child { grid-column: 1 / -1; }
+  .about-text p { font-size: 15px; color: var(--text-muted); line-height: 1.7; font-weight: 300; margin-bottom: 14px; }
+  .about-text p strong { color: var(--text); font-weight: 700; }
+  .features { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 24px; }
+  .feature { background: var(--bg2); padding: 18px 20px; display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: start; transition: background .2s; }
+  .feature:hover { background: var(--bg3); }
+  .feature-n { font-family: 'Oswald', sans-serif; font-size: 24px; font-weight: 700; color: var(--red); line-height: 1; }
+  .feature-t { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 3px; }
+  .feature-d { font-size: 13px; color: var(--text-muted); line-height: 1.5; font-weight: 300; }
 
-  /* PHOTO SLOTS */
-  .photo-slots{display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border);}
-  .pslot{background:var(--bg3);display:grid;grid-template-columns:56px 1fr auto auto;gap:0;align-items:stretch;min-height:56px;}
-  .pslot-preview{width:56px;background:var(--bg4);border-right:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;opacity:0.25;overflow:hidden;flex-shrink:0;}
-  .pslot-preview img{width:56px;height:56px;object-fit:cover;opacity:1;}
-  .pslot-info{padding:10px 14px;display:flex;flex-direction:column;justify-content:center;gap:3px;}
-  .pslot-name{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.08em;color:var(--text);}
-  .pslot-desc{font-size:12px;color:var(--muted);font-weight:300;}
-  .pslot-ratio{display:inline-flex;align-items:center;gap:6px;margin-top:4px;}
-  .pslot-ratio-badge{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.08em;color:var(--red);border:1px solid var(--border-hot);padding:2px 6px;background:var(--red-glow);white-space:nowrap;}
-  .pslot-ratio-tip{font-size:11px;color:var(--dim);font-weight:300;line-height:1.4;}
-  .pslot-status{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.08em;color:var(--dim);text-transform:uppercase;margin-top:4px;}
-  .pslot-status.has-file{color:var(--green);}
-  .pslot-actions{display:flex;align-items:center;gap:0;border-left:1px solid var(--border);}
-  .pslot-btn{height:100%;padding:0 14px;background:none;border:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;transition:all .2s;white-space:nowrap;border-right:1px solid var(--border);}
-  .pslot-btn:last-child{border-right:none;}
-  .pslot-btn.pick{color:var(--muted);}
-  .pslot-btn.pick:hover{color:var(--text);background:var(--bg4);}
-  .pslot-btn.dl{color:var(--red);display:none;}
-  .pslot-btn.dl:hover{background:var(--red-glow);}
-  .pslot-btn.dl.ready{display:block;}
-  .pslot input[type=file]{display:none;}
+  /* STRIP */
+  .strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; height: 160px; }
+  @media (min-width: 768px) { .strip { height: 240px; } }
 
-  .deploy-hint{margin-top:16px;padding:16px 18px;border:1px solid var(--border-hot);background:var(--red-glow);}
-  .deploy-hint-title{font-family:'Oswald',sans-serif;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;color:var(--text);}
-  .deploy-steps{display:flex;flex-direction:column;gap:8px;}
-  .deploy-step{display:flex;gap:10px;align-items:flex-start;}
-  .ds-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--red);flex-shrink:0;padding-top:1px;}
-  .ds-text{font-size:13px;color:var(--muted);font-weight:300;line-height:1.5;}
-  .ds-text code{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text);background:var(--bg3);padding:1px 5px;}
+  /* HOW */
+  .steps { display: grid; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 44px; }
+  @media (min-width: 600px) { .steps { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1024px) { .steps { grid-template-columns: repeat(4, 1fr); } }
+  .step { background: var(--bg2); padding: 28px 22px; }
+  .step-n { font-family: 'Oswald', sans-serif; font-size: 52px; font-weight: 700; line-height: 1; color: var(--bg3); -webkit-text-stroke: 1px var(--border); margin-bottom: 14px; }
+  .step-t { font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
+  .step-d { font-size: 13px; color: var(--text-muted); line-height: 1.6; font-weight: 300; }
 
-  /* EVENT ROWS */
-  .event-list{display:flex;flex-direction:column;gap:8px;}
-  .event-row{background:var(--bg3);border:1px solid var(--border);padding:12px;display:grid;gap:8px;grid-template-columns:60px 60px 1fr 1fr 76px 106px 28px;align-items:end;}
-  @media(max-width:960px){.event-row{grid-template-columns:1fr 1fr;}}
-  .event-row .f{margin-bottom:0;}
-  .rl{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:0.1em;color:var(--dim);text-transform:uppercase;margin-bottom:4px;}
-  .del-btn{width:28px;height:32px;background:var(--bg2);border:1px solid var(--border);color:var(--dim);font-size:13px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;align-self:flex-end;}
-  .del-btn:hover{border-color:var(--red);color:var(--red);}
-  .add-btn{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;background:transparent;color:var(--red);border:1px solid var(--border-hot);padding:7px 14px;cursor:pointer;transition:all .2s;margin-top:8px;}
-  .add-btn:hover{background:var(--red-glow);}
+  /* PRICING */
+  .pricing-grid { display: grid; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 44px; }
+  @media (min-width: 600px) { .pricing-grid { grid-template-columns: 1fr 1fr; max-width: 760px; } }
+  .pcard { background: var(--bg2); padding: 28px 24px; }
+  .pcard.feat { background: var(--bg3); border-left: 3px solid var(--red); }
+  .pbadge { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.15em; color: var(--red); text-transform: uppercase; border: 1px solid var(--red); padding: 3px 8px; display: inline-block; margin-bottom: 18px; }
+  .ptype { font-family: 'Oswald', sans-serif; font-size: 19px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 5px; }
+  .psub { font-size: 13px; color: var(--text-muted); font-weight: 300; margin-bottom: 24px; }
+  .pamount { font-family: 'Oswald', sans-serif; font-size: 44px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+  .pamount sup { font-size: 18px; vertical-align: super; font-weight: 400; }
+  .pperiod { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 24px; }
+  .pinc { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .pinc li { font-size: 13px; color: var(--text-muted); font-weight: 300; display: flex; align-items: flex-start; gap: 8px; }
+  .pinc li::before { content: '—'; color: var(--red); flex-shrink: 0; }
+  .deposit { margin-top: 18px; padding: 12px 14px; border: 1px solid var(--border-hot); background: var(--red-glow); }
+  .deposit-l { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.12em; color: var(--red); text-transform: uppercase; margin-bottom: 5px; }
+  .deposit p { font-size: 12px; color: var(--text-muted); line-height: 1.5; font-weight: 300; }
+  .deposit p strong { color: var(--text); }
+  .warn-box { margin-top: 28px; padding: 18px 20px; border: 1px solid var(--border); background: var(--bg2); display: flex; gap: 14px; align-items: flex-start; max-width: 760px; }
+  .warn-icon { font-size: 18px; flex-shrink: 0; }
+  .warn-t { font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 5px; }
+  .warn-d { font-size: 13px; color: var(--text-muted); line-height: 1.6; font-weight: 300; }
+  .pnote { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-dim); margin-top: 14px; letter-spacing: 0.08em; }
+
+  /* CALENDAR */
+  .cal-intro { font-size: 15px; color: var(--text-muted); font-weight: 300; line-height: 1.6; margin-top: 10px; max-width: 520px; }
+  .events { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 36px; }
+  .event { background: var(--bg2); padding: 18px 16px; display: grid; grid-template-columns: 60px 1fr; gap: 14px; align-items: center; transition: background .2s; }
+  @media (min-width: 580px) { .event { grid-template-columns: 68px 1fr auto; padding: 18px 22px; } }
+  .event:hover { background: var(--bg3); }
+  .edate { text-align: center; padding: 8px 4px; border: 1px solid var(--border); background: var(--bg3); }
+  .eday { font-family: 'Oswald', sans-serif; font-size: 24px; font-weight: 700; line-height: 1; }
+  .emon { font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.15em; color: var(--red); text-transform: uppercase; }
+  .etitle { font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 3px; }
+  .emeta { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--text-muted); letter-spacing: 0.06em; display: flex; flex-wrap: wrap; gap: 10px; }
+  .estatus { font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 6px; border: 1px solid; display: inline-block; margin-top: 6px; }
+  .s-open { color: #4CAF50; border-color: rgba(76,175,80,.3); }
+  .s-few  { color: var(--accent); border-color: rgba(232,192,96,.3); }
+  .s-done { color: var(--text-dim); border-color: rgba(255,255,255,.08); }
+  .eslots { display: none; text-align: right; }
+  @media (min-width: 580px) { .eslots { display: block; } }
+  .sbar { width: 68px; height: 3px; background: var(--bg); border-radius: 2px; margin-bottom: 5px; overflow: hidden; }
+  .sfill { height: 100%; background: var(--red); border-radius: 2px; }
+  .stext { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.08em; color: var(--text-muted); white-space: nowrap; }
+  .ereg { margin-top: 7px; font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.08em; color: var(--red); text-decoration: none; text-transform: uppercase; display: block; transition: opacity .2s; }
+  .ereg:hover { opacity: .6; }
 
   /* LEADERBOARD */
-  .lb-list{display:flex;flex-direction:column;gap:7px;}
-  .lb-row-edit{background:var(--bg3);border:1px solid var(--border);padding:14px 16px;display:grid;grid-template-columns:70px 1fr 1fr 110px 90px 32px;gap:10px;align-items:end;}
-  @media(max-width:780px){.lb-row-edit{grid-template-columns:1fr 1fr;}}
-  .lb-row-edit .f{margin-bottom:0;}
+  .lb { border: 1px solid var(--border); background: var(--bg2); margin-top: 40px; max-width: 760px; overflow-x: auto; }
+  .lb-head { display: grid; grid-template-columns: 40px 1fr 110px 70px; background: var(--bg3); border-bottom: 1px solid var(--border); padding: 10px 16px; gap: 10px; }
+  @media (min-width: 480px) { .lb-head { grid-template-columns: 40px 1fr 150px 80px; } }
+  .lb-hcell { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.12em; color: var(--text-dim); text-transform: uppercase; }
+  .lb-hcell:last-child { text-align: right; }
+  .lb-row { display: grid; grid-template-columns: 40px 1fr 110px 70px; padding: 13px 16px; gap: 10px; border-bottom: 1px solid var(--border); align-items: center; }
+  @media (min-width: 480px) { .lb-row { grid-template-columns: 40px 1fr 150px 80px; } }
+  .lb-row:last-child { border-bottom: none; }
+  .lb-pos { font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 700; }
+  .lb-name { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+  .lb-date { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--text-dim); letter-spacing: 0.06em; }
+  .lb-quest { font-size: 12px; color: var(--text-muted); font-weight: 300; }
+  .lb-score { font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 700; text-align: right; }
+  .lb-note { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-dim); margin-top: 14px; letter-spacing: 0.07em; }
 
-  /* MOBILE */
-  .mob-topbar{display:none;}
-  .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:90;}
-  .overlay.show{display:block;}
-  @media(max-width:768px){
-    .sidebar{transform:translateX(-100%);transition:transform .3s;}
-    .sidebar.open{transform:translateX(0);}
-    .main{margin-left:0;}
-    .mob-topbar{display:flex;height:50px;background:var(--bg2);border-bottom:1px solid var(--border);align-items:center;padding:0 14px;gap:10px;position:sticky;top:0;z-index:50;}
-    .mob-logo{font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;flex:1;}
-    .mob-logo span{color:var(--red);}
-    .mob-burger{display:flex;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:4px;}
-    .mob-burger span{display:block;width:20px;height:1.5px;background:var(--text);}
-    .topbar{display:none;}
-    .content{padding:14px;}
-    .pslot{grid-template-columns:48px 1fr;}
-    .pslot-actions{display:none;}
-  }
-  select option{background:var(--bg3);}
+  /* GALLERY */
+  .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 150px 150px; gap: 4px; margin-top: 40px; }
+  @media (min-width: 600px) { .gallery-grid { grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 200px 170px; } .gallery-grid .photo:first-child { grid-row: 1 / 3; } }
+
+  /* FAQ */
+  .faq-grid { display: grid; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 40px; }
+  @media (min-width: 768px) { .faq-grid { grid-template-columns: 1fr 1fr; } }
+  .faq-item { background: var(--bg2); padding: 22px 24px; transition: background .2s; }
+  .faq-item:hover { background: var(--bg3); }
+  .faq-q { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 9px; }
+  .faq-q::before { content: 'Q'; font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--red); flex-shrink: 0; padding-top: 3px; }
+  .faq-a { font-size: 13px; color: var(--text-muted); line-height: 1.65; font-weight: 300; padding-left: 20px; }
+
+  /* CONTACT */
+  .contact-grid { display: grid; gap: 40px; margin-top: 44px; }
+  @media (min-width: 768px) { .contact-grid { grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; } }
+  .contact-lead { font-size: 15px; color: var(--text-muted); line-height: 1.7; font-weight: 300; margin-bottom: 24px; }
+  .channels { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .channel { background: var(--bg2); padding: 16px 18px; display: flex; align-items: center; gap: 12px; text-decoration: none; transition: background .2s; }
+  .channel:hover { background: var(--bg); }
+  .ch-icon { width: 32px; height: 32px; flex-shrink: 0; background: var(--red-glow); border: 1px solid var(--border-hot); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .ch-l { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 2px; }
+  .ch-v { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 600; color: var(--text); }
+  .ch-arr { margin-left: auto; color: var(--text-dim); font-size: 15px; transition: color .2s; }
+  .channel:hover .ch-arr { color: var(--red); }
+
+  /* FOOTER */
+  footer { background: var(--bg); border-top: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 6px; align-items: center; text-align: center; }
+  @media (min-width: 600px) { footer { flex-direction: row; justify-content: space-between; padding: 20px 48px; } }
+  .foot-logo { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+  .foot-logo span { color: var(--red); }
+  .foot-t { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--text-dim); letter-spacing: 0.08em; }
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-box">
-    <div class="login-logo"><span>RC</span> Crawler Club</div>
-    <div class="login-title">Панель<br>управления</div>
-    <div class="login-sub">Введите пароль</div>
-    <div class="f"><label>Пароль</label><input type="password" id="pwInput" onkeydown="if(event.key==='Enter')doLogin()"></div>
-    <button class="btn-login" onclick="doLogin()">Войти →</button>
-    <div class="login-err" id="loginErr">Неверный пароль</div>
-  </div>
+<nav>
+  <a class="nav-logo" href="#"><span>RC</span> Crawler Club</a>
+  <ul class="nav-links">
+    <li><a href="#about">О квестах</a></li>
+    <li><a href="#how">Как это работает</a></li>
+    <li><a href="#pricing">Участие</a></li>
+    <li><a href="#calendar">Расписание</a></li>
+    <li><a href="#records">Рекорды</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <a class="nav-cta" href="https://t.me/YOUR_TELEGRAM" target="_blank">Записаться →</a>
+  <button class="nav-burger" id="burger" aria-label="Меню"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" onclick="closeMenu()">О квестах</a>
+  <a href="#how" onclick="closeMenu()">Как это работает</a>
+  <a href="#pricing" onclick="closeMenu()">Участие и цены</a>
+  <a href="#calendar" onclick="closeMenu()">Расписание</a>
+  <a href="#records" onclick="closeMenu()">Таблица рекордов</a>
+  <a href="#faq" onclick="closeMenu()">FAQ</a>
+  <a href="#contact" onclick="closeMenu()">Контакты</a>
+  <a href="https://t.me/YOUR_TELEGRAM" target="_blank" class="m-cta">Записаться →</a>
 </div>
 
-<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
-
-<!-- APP -->
-<div class="app" id="app">
-  <aside class="sidebar" id="sidebar">
-    <div class="sb-logo">
-      <div class="sb-logo-t"><span>RC</span> Crawler Club</div>
-      <div class="sb-sub">Панель управления</div>
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-content">
+    <div class="hero-live"><div class="dot"></div>Новосибирск — сезон открыт</div>
+    <h1 class="hero-title">Офроад<br><span class="r">квест</span><br><span class="o">RC</span> club</h1>
+    <p class="hero-sub">Радиоуправляемые внедорожники. Реальные препятствия. Настоящий азарт. Приезжай со своей машиной — или возьми нашу.</p>
+    <div class="hero-actions">
+      <a class="btn btn-red" href="#calendar">Ближайший квест →</a>
+      <a class="btn btn-ghost" href="#about">Что это такое?</a>
     </div>
-    <nav class="sb-nav">
-      <div class="sb-sec">Контент</div>
-      <button class="sb-item active" onclick="showPanel('photos',this)"><span class="sb-icon">🖼</span>Фотографии</button>
-      <button class="sb-item" onclick="showPanel('pricing',this)"><span class="sb-icon">💰</span>Стоимость</button>
-      <button class="sb-item" onclick="showPanel('events',this)"><span class="sb-icon">📅</span>Квесты</button>
-      <button class="sb-item" onclick="showPanel('records',this)"><span class="sb-icon">🏆</span>Таблица рекордов</button>
-      <button class="sb-item" onclick="showPanel('contacts',this)"><span class="sb-icon">📱</span>Контакты</button>
-    </nav>
-    <div class="sb-foot"><button onclick="doLogout()">Выйти</button></div>
-  </aside>
+    <div class="scroll-hint"><div class="sh-line"></div><div class="sh-t">scroll</div></div>
+  </div>
+  <div class="hero-photo photo">
+    <div class="photo-icon">📷</div>
+    <div class="photo-label">Главное фото — машина на препятствии крупным планом, грязь, динамика</div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-n">5</div><div class="stat-l">чекпойнтов</div></div>
+    <div class="stat"><div class="stat-n">~2ч</div><div class="stat-l">длительность</div></div>
+    <div class="stat"><div class="stat-n">5+</div><div class="stat-l">участников</div></div>
+    <div class="stat"><div class="stat-n">30км</div><div class="stat-l">от города</div></div>
+  </div>
+</section>
 
-  <div class="main">
-    <div class="mob-topbar">
-      <button class="mob-burger" onclick="openSidebar()"><span></span><span></span><span></span></button>
-      <div class="mob-logo"><span>RC</span> Crawler Club</div>
-      <button class="save-btn" onclick="saveAll()">Сохранить</button>
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<section class="sec" style="background:var(--bg)" id="about">
+  <div class="label">О формате</div>
+  <h2 class="sec-title">Что такое<br>RC квест?</h2>
+  <div class="about-grid">
+    <div>
+      <div class="about-text">
+        <p>Это <strong>приключение на радиоуправляемых внедорожниках</strong> в реальных условиях офроада. Не гоночный трек, не асфальт — грязь, камни, подъёмы, броды. Всё как у взрослых, только машинки 1:10.</p>
+        <p>Каждый квест — это сюжет с чекпойнтами, заданиями и финальным испытанием. <strong>Ты не просто катаешься — ты проходишь маршрут</strong>, решаешь задачи и соревнуешься со временем или другими участниками.</p>
+        <p>Подходит всем: можно приехать со своей техникой или взять арендную модель. Опыт управления RC не обязателен — научим прямо на месте.</p>
+      </div>
+      <div class="features">
+        <div class="feature"><div class="feature-n">01</div><div><div class="feature-t">Реальный офроад</div><div class="feature-d">Настоящие препятствия: грязь, камни, уклоны. Трасса в живой природе, а не манеж.</div></div></div>
+        <div class="feature"><div class="feature-n">02</div><div><div class="feature-t">Сюжет и задания</div><div class="feature-d">Для тех, кому стало мало просто кататься — здесь есть цель, сюжет и настоящий азарт.</div></div></div>
+        <div class="feature"><div class="feature-n">03</div><div><div class="feature-t">Аренда техники</div><div class="feature-d">Нет своей машины? Не проблема — арендуй нашу и погружайся без больших вложений.</div></div></div>
+        <div class="feature"><div class="feature-n">04</div><div><div class="feature-t">Своя тусовка</div><div class="feature-d">Закрытое сообщество RC-любителей. Обмен опытом, совместные выезды, апгрейды.</div></div></div>
+      </div>
     </div>
-    <div class="topbar">
-      <div class="topbar-title" id="topbarTitle">Фотографии</div>
-      <div class="toast" id="toast">Сохранено ✓</div>
-      <button class="save-btn" id="saveBtn" onclick="saveAll()">Сохранить изменения</button>
-    </div>
-
-    <div class="content">
-
-      <!-- PHOTOS -->
-      <div class="panel active" id="panel-photos">
-        <div class="card">
-          <div class="card-title">Загрузка фотографий</div>
-          <div class="photo-slots" id="photoSlots"></div>
-
-          <div class="deploy-hint" id="deployHint" style="display:none">
-            <div class="deploy-hint-title">Как обновить фото на сайте</div>
-            <div class="deploy-steps">
-              <div class="deploy-step"><div class="ds-num">1</div><div class="ds-text">Нажми <strong>Скачать</strong> рядом с каждым фото — файл сохранится с правильным именем автоматически</div></div>
-              <div class="deploy-step"><div class="ds-num">2</div><div class="ds-text">Все скачанные файлы собери в папку <code>photos</code></div></div>
-              <div class="deploy-step"><div class="ds-num">3</div><div class="ds-text">Открой <a href="https://app.netlify.com" target="_blank" style="color:var(--red)">app.netlify.com</a> → твой сайт → вкладка <strong>Deploys</strong></div></div>
-              <div class="deploy-step"><div class="ds-num">4</div><div class="ds-text">Перетащи всю папку с сайтом (включая папку <code>photos</code>) в окно деплоя</div></div>
-              <div class="deploy-step"><div class="ds-num">5</div><div class="ds-text">Через 30 секунд фото появятся на сайте</div></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Что такое папка photos/</div>
-          <p style="font-size:13px;color:var(--muted);line-height:1.7;font-weight:300">
-            Все фото сайта хранятся в папке <code style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text);background:var(--bg3);padding:1px 5px">photos/</code> рядом с файлами сайта на Netlify.
-            Имена файлов строго фиксированы — <code style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text);background:var(--bg3);padding:1px 5px">hero.jpg</code>, <code style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text);background:var(--bg3);padding:1px 5px">about0.jpg</code> и т.д.
-            Панель сама переименовывает твой файл при скачивании — тебе не нужно ничего переименовывать вручную.
-          </p>
-        </div>
-      </div>
-
-      <!-- PRICING -->
-      <div class="panel" id="panel-pricing">
-        <div class="card">
-          <div class="card-title">Тариф «Своя машина»</div>
-          <div class="row2">
-            <div class="f"><label>Цена (₽)</label><input type="number" id="price1" value="800"></div>
-            <div class="f"><label>Подзаголовок</label><input type="text" id="price1sub" value="Приезжаешь со своей RC-техникой"></div>
-          </div>
-          <div class="f" style="margin-top:10px"><label>Что включено (каждый пункт с новой строки)</label>
-            <textarea id="price1inc" rows="5">Участие в квесте на своей машине
-Организатор-ведущий, который сопровождает и считает баллы
-Фотографии с квеста
-Трасса, чекпойнты и все задания
-Попадание в таблицу рекордов</textarea>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title">Тариф «Аренда модели»</div>
-          <div class="row2">
-            <div class="f"><label>Цена (₽)</label><input type="number" id="price2" value="1800"></div>
-            <div class="f"><label>Подзаголовок</label><input type="text" id="price2sub" value="Мы выдаём RC-внедорожник на время квеста"></div>
-          </div>
-          <div class="f" style="margin-top:10px"><label>Что включено (каждый пункт с новой строки)</label>
-            <textarea id="price2inc" rows="4">Готовая к бою RC-модель
-Пульт и всё необходимое
-Инструктаж по управлению
-Всё из тарифа «Своя машина»</textarea>
-          </div>
-          <div class="row2" style="margin-top:10px">
-            <div class="f"><label>Залог (₽)</label><input type="number" id="deposit" value="3000"></div>
-            <div class="f"><label>Текст про залог</label><input type="text" id="depositText" value="Возвращается после квеста при отсутствии повреждений по вине участника."></div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title">Сноска под ценами</div>
-          <div class="f"><input type="text" id="priceNote" value="* Цены ориентировочные. Уточняй актуальную стоимость при записи через Telegram."></div>
-        </div>
-      </div>
-
-      <!-- EVENTS -->
-      <div class="panel" id="panel-events">
-        <div class="card">
-          <div class="card-title">Список квестов</div>
-          <div class="event-list" id="eventList"></div>
-          <button class="add-btn" onclick="addEvent()">+ Добавить квест</button>
-        </div>
-      </div>
-
-      <!-- RECORDS -->
-      <div class="panel" id="panel-records">
-        <div class="card">
-          <div class="card-title">Таблица рекордов</div>
-          <div class="lb-list" id="lbList"></div>
-          <button class="add-btn" onclick="addRecord()">+ Добавить запись</button>
-        </div>
-      </div>
-
-      <!-- CONTACTS -->
-      <div class="panel" id="panel-contacts">
-        <div class="card">
-          <div class="card-title">Telegram</div>
-          <div class="row2">
-            <div class="f"><label>Никнейм (без @)</label><input type="text" id="tg" placeholder="your_telegram_nick"></div>
-            <div class="f"><label>Ссылка (https://t.me/...)</label><input type="text" id="tgLink" placeholder="https://t.me/your_nick"></div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title">Instagram</div>
-          <div class="row2">
-            <div class="f"><label>Никнейм (без @)</label><input type="text" id="ig" placeholder="your_instagram_nick"></div>
-            <div class="f"><label>Ссылка</label><input type="text" id="igLink" placeholder="https://instagram.com/your_nick"></div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title">Телефон</div>
-          <div class="f"><label>Номер (в любом формате)</label><input type="text" id="phone" placeholder="+7 (911) 859-00-29"></div>
-        </div>
-        <div class="card">
-          <div class="card-title">Прочее</div>
-          <div class="row2">
-            <div class="f"><label>Город</label><input type="text" id="city" value="Новосибирск"></div>
-            <div class="f"><label>Подпись в футере</label><input type="text" id="footerText" value="Офроад квесты на радиоуправляемых внедорожниках"></div>
-          </div>
-        </div>
-      </div>
-
+    <div class="about-photo-grid">
+      <div class="photo"><div class="photo-icon">📷</div><div class="photo-label">Атмосферный кадр — машина в лесу или на трассе, широкий план</div></div>
+      <div class="photo"><div class="photo-icon">📷</div><div class="photo-label">Пилот с пультом</div></div>
+      <div class="photo"><div class="photo-icon">📷</div><div class="photo-label">Колесо в грязи крупно</div></div>
     </div>
   </div>
+</section>
+
+<!-- STRIP -->
+<div class="strip">
+  <div class="photo"><div class="photo-icon">📷</div><div class="photo-label">Общий вид трассы</div></div>
+  <div class="photo"><div class="photo-icon">📷</div><div class="photo-label">Машина на подъёме</div></div>
+  <div class="photo"><div class="photo-icon">📷</div><div class="photo-label">Группа участников</div></div>
 </div>
+
+<!-- HOW -->
+<section class="sec" style="background:var(--bg2)" id="how">
+  <div class="label">Процесс</div>
+  <h2 class="sec-title">Как это<br>работает?</h2>
+  <div class="steps">
+    <div class="step"><div class="step-n">01</div><div class="step-t">Записываешься</div><div class="step-d">Пишешь в Telegram, выбираешь дату и слот. Получаешь подтверждение, вносишь предоплату и узнаёшь точку встречи. Квесты проходят в радиусе 20–30 км от города.</div></div>
+    <div class="step"><div class="step-n">02</div><div class="step-t">Приезжаешь</div><div class="step-d">Со своей машиной или берёшь арендную. Небольшой брифинг — и на старт.</div></div>
+    <div class="step"><div class="step-n">03</div><div class="step-t">Проходишь квест</div><div class="step-d">Двигаешься по чекпойнтам и выполняешь задания вместе с партнёрами. Нужно уложиться во время, чисто пройти препятствия и выполнить как можно больше заданий.</div></div>
+    <div class="step"><div class="step-n">04</div><div class="step-t">Финиш</div><div class="step-d">Результаты, разбор, общение. Лучшие команды попадают в таблицу рекордов.</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PRICING -->
+<section class="sec" style="background:var(--bg)" id="pricing">
+  <div class="label">Стоимость</div>
+  <h2 class="sec-title">Участие<br>в квесте</h2>
+  <div class="pricing-grid">
+    <div class="pcard">
+      <div class="pbadge">Своя машина</div>
+      <div class="ptype">С собственной<br>моделью</div>
+      <div class="psub">Приезжаешь со своей RC-техникой</div>
+      <div class="pamount"><sup>₽</sup>800</div>
+      <div class="pperiod">/ участник / квест</div>
+      <ul class="pinc">
+        <li>Участие в квесте на своей машине</li>
+        <li>Организатор-ведущий, который сопровождает и считает баллы</li>
+        <li>Фотографии с квеста</li>
+        <li>Трасса, чекпойнты и все задания</li>
+        <li>Попадание в таблицу рекордов</li>
+      </ul>
+    </div>
+    <div class="pcard feat">
+      <div class="pbadge">Аренда</div>
+      <div class="ptype">Аренда<br>модели</div>
+      <div class="psub">Мы выдаём RC-внедорожник на время квеста</div>
+      <div class="pamount"><sup>₽</sup>1 800</div>
+      <div class="pperiod">/ участник / квест</div>
+      <ul class="pinc">
+        <li>Готовая к бою RC-модель</li>
+        <li>Пульт и всё необходимое</li>
+        <li>Инструктаж по управлению</li>
+        <li>Всё из тарифа «Своя машина»</li>
+      </ul>
+      <div class="deposit">
+        <div class="deposit-l">Залог</div>
+        <p>При получении модели берётся залог <strong>3 000 ₽</strong>. Возвращается после квеста при отсутствии повреждений по вине участника.</p>
+      </div>
+    </div>
+  </div>
+  <div class="warn-box">
+    <div class="warn-icon">⚠</div>
+    <div>
+      <div class="warn-t">Одежда и безопасность</div>
+      <div class="warn-d">Квесты проходят в лесу и на пересечённой местности. Одевайтесь по погоде: закрытая обувь, длинные брюки. Репеллент от клещей и насекомых — ответственность каждого участника.</div>
+    </div>
+  </div>
+  <p class="pnote">* Цены ориентировочные. Уточняй актуальную стоимость при записи через Telegram.</p>
+</section>
+
+<!-- CALENDAR -->
+<section class="sec" style="background:var(--bg2)" id="calendar">
+  <div class="label">Расписание</div>
+  <h2 class="sec-title">Ближайшие<br>квесты</h2>
+  <p class="cal-intro">Записывайся заранее — слоты ограничены. Актуальный список обновляется в Telegram-канале.</p>
+  <div class="events">
+    <div class="event">
+      <div class="edate"><div class="eday">19</div><div class="emon">Апр</div></div>
+      <div><div class="etitle">Квест «Найти базу»</div><div class="emeta"><span>Сб, 14:00</span><span>Академгородок</span><span>~2 ч</span></div><div class="estatus s-open">Запись открыта</div></div>
+      <div class="eslots"><div class="sbar"><div class="sfill" style="width:40%"></div></div><div class="stext">2 / 5 мест</div><a class="ereg" href="https://t.me/YOUR_TELEGRAM" target="_blank">Записаться →</a></div>
+    </div>
+    <div class="event">
+      <div class="edate"><div class="eday">26</div><div class="emon">Апр</div></div>
+      <div><div class="etitle">Ночной квест</div><div class="emeta"><span>Сб, 20:00</span><span>Нижняя Ельцовка</span><span>~2.5 ч</span></div><div class="estatus s-few">Мало мест</div></div>
+      <div class="eslots"><div class="sbar"><div class="sfill" style="width:80%"></div></div><div class="stext">4 / 5 мест</div><a class="ereg" href="https://t.me/YOUR_TELEGRAM" target="_blank">Записаться →</a></div>
+    </div>
+    <div class="event">
+      <div class="edate"><div class="eday">10</div><div class="emon">Май</div></div>
+      <div><div class="etitle">Командный квест</div><div class="emeta"><span>Вс, 12:00</span><span>TBD</span><span>~3 ч</span></div><div class="estatus s-open">Запись открыта</div></div>
+      <div class="eslots"><div class="sbar"><div class="sfill" style="width:0%"></div></div><div class="stext">0 / 8 мест</div><a class="ereg" href="https://t.me/YOUR_TELEGRAM" target="_blank">Записаться →</a></div>
+    </div>
+    <div class="event" style="opacity:.4">
+      <div class="edate"><div class="eday" style="color:var(--text-muted)">18</div><div class="emon" style="color:var(--text-dim)">Апр</div></div>
+      <div><div class="etitle" style="color:var(--text-muted)">Мини-квест «Спасти Анатолия»</div><div class="emeta"><span>Пт, 18:00</span><span>Академгородок</span></div><div class="estatus s-done">Завершён</div></div>
+      <div class="eslots"><div class="sbar"><div class="sfill" style="width:100%;background:var(--text-dim)"></div></div><div class="stext">5 / 5</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LEADERBOARD -->
+<section class="sec" style="background:var(--bg)" id="records">
+  <div class="label">Таблица рекордов</div>
+  <h2 class="sec-title">Лучшие<br>команды</h2>
+  <p style="font-size:15px;color:var(--text-muted);max-width:520px;margin-top:10px;font-weight:300;line-height:1.6">Финишировали — попали в историю. Здесь живут результаты лучших команд всех квестов.</p>
+  <div class="lb">
+    <div class="lb-head">
+      <div class="lb-hcell">#</div>
+      <div class="lb-hcell">Участник</div>
+      <div class="lb-hcell">Квест</div>
+      <div class="lb-hcell" style="text-align:right">Очки</div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-pos" style="color:var(--accent)">1</div>
+      <div><div class="lb-name">Виктор А.</div><div class="lb-date">18 апр 2026</div></div>
+      <div class="lb-quest">Спасти Анатолия</div>
+      <div class="lb-score">940</div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-pos" style="color:var(--text-muted)">2</div>
+      <div><div class="lb-name">Максим Р.</div><div class="lb-date">18 апр 2026</div></div>
+      <div class="lb-quest">Спасти Анатолия</div>
+      <div class="lb-score">870</div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-pos" style="color:var(--text-dim)">3</div>
+      <div><div class="lb-name">Денис К.</div><div class="lb-date">18 апр 2026</div></div>
+      <div class="lb-quest">Спасти Анатолия</div>
+      <div class="lb-score">810</div>
+    </div>
+  </div>
+  <p class="lb-note">* Данные обновляются после каждого квеста</p>
+</section>
+
+<!-- GALLERY -->
+<section class="sec" style="background:var(--bg2)" id="gallery">
+  <div class="label">Галерея</div>
+  <h2 class="sec-title">Это<br>выглядит так</h2>
+  <div class="gallery-grid">
+    <div class="photo"><div class="photo-icon">📷</div><div class="photo-label">Машина на сложном вертикальном препятствии</div></div>
+    <div class="photo"><div class="photo-icon">📷</div><div class="photo-label">Участники на финише</div></div>
+    <div class="photo"><div class="photo-icon">📷</div><div class="photo-label">Экран чекпойнта с таймером</div></div>
+    <div class="photo"><div class="photo-icon">📷</div><div class="photo-label">Вид на трассу сверху / с дрона</div></div>
+    <div class="photo"><div class="photo-icon">📷</div><div class="photo-label">Машина в броде — эффектный момент</div></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec" style="background:var(--bg)" id="faq">
+  <div class="label">Вопросы</div>
+  <h2 class="sec-title">Часто<br>спрашивают</h2>
+  <div class="faq-grid">
+    <div class="faq-item"><div class="faq-q">Нужен ли опыт управления RC?</div><div class="faq-a">Нет. Мы проводим короткий инструктаж на месте. Если берёшь арендную машину — покажем всё необходимое. Большинство новичков справляются уже на первом квесте.</div></div>
+    <div class="faq-item"><div class="faq-q">Какая модель нужна для участия?</div><div class="faq-a">Подойдёт любой RC краулер или трофи масштаба 1:10 в рабочем состоянии. Если не уверен — уточни в Telegram, поможем разобраться, подходит ли твоя машина.</div></div>
+    <div class="faq-item"><div class="faq-q">Сколько длится квест?</div><div class="faq-a">В среднем 1.5–2.5 часа. Зависит от формата: стандартный квест — около 2 часов, ночной или командный может быть длиннее. Время всегда указано в расписании.</div></div>
+    <div class="faq-item"><div class="faq-q">Можно прийти с детьми?</div><div class="faq-a">Квесты рассчитаны на взрослых. Это место, где можно вернуться в детство, расслабиться и получить настоящий кайф — без лишнего контроля и чувства ответственности за кого-то.</div></div>
+    <div class="faq-item"><div class="faq-q">Что если сломается машина на квесте?</div><div class="faq-a">Всё как в жизни — техника иногда ломается. Мелкие поломки стараемся устранить прямо на трассе. Если что-то вышло из строя серьёзно, квест для участника, к сожалению, останавливается. Если поломка произошла не по вине участника — деньги возвращаются.</div></div>
+    <div class="faq-item"><div class="faq-q">Где проходят квесты?</div><div class="faq-a">Локации меняются — выбираем интересные офроад-точки в Новосибирске и ближайших окрестностях, обычно в радиусе 20–30 км. Точный адрес приходит в Telegram после записи.</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section class="sec" style="background:var(--bg3)" id="contact">
+  <div class="label">Связь</div>
+  <h2 class="sec-title">Записаться<br>и узнать больше</h2>
+  <div class="contact-grid">
+    <div>
+      <p class="contact-lead">Все вопросы, запись на квест и актуальное расписание — в Telegram. Отвечаем быстро. Если есть своя RC-техника, расскажи о ней при записи — поможем с подготовкой.</p>
+      <a class="btn btn-red" href="https://t.me/YOUR_TELEGRAM" target="_blank">Написать в Telegram →</a>
+    </div>
+    <div class="channels">
+      <a class="channel" href="https://t.me/YOUR_TELEGRAM" target="_blank">
+        <div class="ch-icon">✈</div>
+        <div><span class="ch-l">Telegram</span><span class="ch-v">@YOUR_TELEGRAM</span></div>
+        <span class="ch-arr">→</span>
+      </a>
+      <a class="channel" href="https://instagram.com/YOUR_INSTAGRAM" target="_blank">
+        <div class="ch-icon">◎</div>
+        <div><span class="ch-l">Instagram</span><span class="ch-v">@YOUR_INSTAGRAM</span></div>
+        <span class="ch-arr">→</span>
+      </a>
+      <a class="channel" id="ch-phone" href="tel:YOUR_PHONE" target="_blank">
+        <div class="ch-icon">☎</div>
+        <div><span class="ch-l">Телефон</span><span class="ch-v" id="ch-phone-val">+7 (XXX) XXX-XX-XX</span></div>
+        <span class="ch-arr">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-logo"><span>RC</span> Crawler Club — Новосибирск</div>
+  <div class="foot-t">Офроад квесты на радиоуправляемых внедорожниках</div>
+</footer>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────────────────
+// ── nav burger ──
+const burger = document.getElementById('burger');
+const menu = document.getElementById('mobileMenu');
+burger.addEventListener('click', () => { burger.classList.toggle('open'); menu.classList.toggle('open'); });
+function closeMenu() { burger.classList.remove('open'); menu.classList.remove('open'); }
+function checkWidth() {
+  const links = document.querySelector('.nav-links');
+  if (window.innerWidth < 900) { links.style.display='none'; burger.style.display='flex'; }
+  else { links.style.display='flex'; burger.style.display='none'; menu.classList.remove('open'); burger.classList.remove('open'); }
+}
+checkWidth();
+window.addEventListener('resize', checkWidth);
+
+// ── ФОТО: загружаем прямо из папки photos/ на Netlify ──
+const PHOTO_MAP = {
+  hero:   { sel: '#top .hero-photo' },
+  about0: { sel: '.about-photo-grid .photo:nth-child(1)' },
+  about1: { sel: '.about-photo-grid .photo:nth-child(2)' },
+  about2: { sel: '.about-photo-grid .photo:nth-child(3)' },
+  strip0: { sel: '.strip .photo:nth-child(1)' },
+  strip1: { sel: '.strip .photo:nth-child(2)' },
+  strip2: { sel: '.strip .photo:nth-child(3)' },
+  gal0:   { sel: '.gallery-grid .photo:nth-child(1)' },
+  gal1:   { sel: '.gallery-grid .photo:nth-child(2)' },
+  gal2:   { sel: '.gallery-grid .photo:nth-child(3)' },
+  gal3:   { sel: '.gallery-grid .photo:nth-child(4)' },
+  gal4:   { sel: '.gallery-grid .photo:nth-child(5)' }
+};
+
+function applyPhoto(key, src) {
+  const cfg = PHOTO_MAP[key];
+  if (!cfg) return;
+  const el = document.querySelector(cfg.sel);
+  if (!el) return;
+  el.style.cssText += ';background-image:url('+src+');background-size:cover;background-position:center;border:none;';
+  el.querySelectorAll('.photo-icon,.photo-label').forEach(c => c.style.display='none');
+}
+
+// Пробуем загрузить каждое фото — если файла нет, просто остаётся плейсхолдер
+Object.keys(PHOTO_MAP).forEach(key => {
+  const src = 'photos/' + key + '.jpg';
+  const img = new Image();
+  img.onload = () => applyPhoto(key, src);
+  img.src = src;
+});
+
+// ── JSONbin — только для данных (не фото) ──
 const API_KEY = '$2a$10$nJosV.HW72Yt3FbSTXHV5eQJTNoHUoflvtWbVnuyzEXBLFFUjB.Ty';
 const BIN_ID  = '69de69c136566621a8b213bb';
-const ADMIN_PASSWORD = '89118590029'; // ← ЗАМЕНИ на свой пароль
 
-// ── PHOTO SLOTS CONFIG ──────────────────────────────────────────────
-const SLOTS = [
-  // hero: занимает половину экрана по высоте, вертикальное на мобиле
-  { key:'hero',   filename:'hero.jpg',   desc:'Главное фото — машина на препятствии крупным планом',   group:'Герой',     ratio:'3:4 или 1:1', ratioTip:'Снимай вертикально или квадратно. Верх и низ обрезаются — главное в центре кадра.' },
-  // about0: широкий баннер на всю ширину коллажа
-  { key:'about0', filename:'about0.jpg', desc:'Широкий план — машина в лесу или на трассе',              group:'О квестах', ratio:'16:9 или шире', ratioTip:'Горизонтальный кадр, широкий. Высота небольшая — снимай с запасом по бокам.' },
-  // about1, about2: маленькие квадратные ячейки
-  { key:'about1', filename:'about1.jpg', desc:'Пилот с пультом в руках',                                group:'О квестах', ratio:'1:1 (квадрат)',  ratioTip:'Квадратный кадр. Снимай по центру — бока обрезаются.' },
-  { key:'about2', filename:'about2.jpg', desc:'Колесо в грязи — крупный план',                          group:'О квестах', ratio:'1:1 (квадрат)',  ratioTip:'Квадратный кадр. Снимай по центру — бока обрезаются.' },
-  // strip: три одинаковые горизонтальные полосы, невысокие
-  { key:'strip0', filename:'strip0.jpg', desc:'Общий вид трассы',                                       group:'Полоса',    ratio:'16:9 или шире', ratioTip:'Горизонтальный широкий кадр. Полоса низкая — снимай с запасом сверху и снизу.' },
-  { key:'strip1', filename:'strip1.jpg', desc:'Машина на подъёме',                                      group:'Полоса',    ratio:'16:9 или шире', ratioTip:'Горизонтальный широкий кадр. Полоса низкая — снимай с запасом сверху и снизу.' },
-  { key:'strip2', filename:'strip2.jpg', desc:'Группа участников',                                      group:'Полоса',    ratio:'16:9 или шире', ratioTip:'Горизонтальный широкий кадр. Полоса низкая — снимай с запасом сверху и снизу.' },
-  // gal0: большая ячейка, занимает две строки галереи — вертикальная
-  { key:'gal0',   filename:'gal0.jpg',   desc:'Машина на сложном вертикальном препятствии',             group:'Галерея',   ratio:'2:3 (вертикаль)', ratioTip:'Вертикальный кадр. Снимай с запасом — по высоте занимает много места.' },
-  // gal1-gal4: маленькие квадратные ячейки
-  { key:'gal1',   filename:'gal1.jpg',   desc:'Участники на финише',                                    group:'Галерея',   ratio:'1:1 (квадрат)',   ratioTip:'Квадратный кадр. Снимай по центру — бока обрезаются.' },
-  { key:'gal2',   filename:'gal2.jpg',   desc:'Экран чекпойнта с таймером',                             group:'Галерея',   ratio:'1:1 (квадрат)',   ratioTip:'Квадратный кадр. Снимай по центру — бока обрезаются.' },
-  { key:'gal3',   filename:'gal3.jpg',   desc:'Вид на трассу сверху / с дрона',                         group:'Галерея',   ratio:'1:1 (квадрат)',   ratioTip:'Квадратный кадр. Снимай по центру — бока обрезаются.' },
-  { key:'gal4',   filename:'gal4.jpg',   desc:'Машина в броде или луже — эффектный момент',             group:'Галерея',   ratio:'1:1 (квадрат)',   ratioTip:'Квадратный кадр. Снимай по центру — бока обрезаются.' },
-];
-
-// ── STATE ───────────────────────────────────────────────────────────
-const pendingFiles = {}; // key → { blob, objectUrl }
-let events = [];
-let records = [];
-
-// ── JSONBIN ─────────────────────────────────────────────────────────
-async function binGet() {
-  const r = await fetch('https://api.jsonbin.io/v3/b/'+BIN_ID+'/latest',{headers:{'X-Master-Key':API_KEY}});
-  return (await r.json()).record || {};
+function nl2li(text) {
+  return (text||'').split('\n').filter(s=>s.trim()).map(s=>'<li>'+s.trim()+'</li>').join('');
 }
-async function binSet(data) {
-  const current = await binGet();
-  await fetch('https://api.jsonbin.io/v3/b/'+BIN_ID,{
-    method:'PUT',
-    headers:{'Content-Type':'application/json','X-Master-Key':API_KEY},
-    body: JSON.stringify({...current, site: data})
-  });
+function fmtSlots(slots) {
+  const p=(slots||'0/5').split('/'), f=parseInt(p[0])||0, t=parseInt(p[1])||5;
+  return { pct:Math.round(f/t*100), text:f+' / '+t+' мест' };
 }
+const sMap = {
+  open:{ cls:'s-open', label:'Запись открыта' },
+  few: { cls:'s-few',  label:'Мало мест' },
+  done:{ cls:'s-done', label:'Завершён' }
+};
 
-// ── BUILD PHOTO SLOTS ────────────────────────────────────────────────
-function buildPhotoSlots() {
-  const container = document.getElementById('photoSlots');
-  container.innerHTML = '';
-  SLOTS.forEach(slot => {
-    const row = document.createElement('div');
-    row.className = 'pslot';
-    row.id = 'pslot-' + slot.key;
-    row.innerHTML =
-      '<div class="pslot-preview" id="prev-'+slot.key+'">📷</div>'+
-      '<div class="pslot-info">'+
-        '<div class="pslot-name">'+slot.filename+'</div>'+
-        '<div class="pslot-desc">'+slot.desc+'</div>'+
-        '<div class="pslot-ratio">'+
-          '<span class="pslot-ratio-badge">'+slot.ratio+'</span>'+
-          '<span class="pslot-ratio-tip">'+slot.ratioTip+'</span>'+
-        '</div>'+
-        '<div class="pslot-status" id="status-'+slot.key+'">'+slot.group+' · нет файла</div>'+
-      '</div>'+
-      '<div class="pslot-actions">'+
-        '<button class="pslot-btn pick" onclick="pickFile(\''+slot.key+'\')">Выбрать</button>'+
-        '<button class="pslot-btn dl" id="dl-'+slot.key+'" onclick="downloadFile(\''+slot.key+'\')">Скачать</button>'+
-      '</div>'+
-      '<input type="file" id="file-'+slot.key+'" accept="image/*" onchange="handleFile(event,\''+slot.key+'\')">';
-    container.appendChild(row);
-  });
-
-  // check which photos already exist on the site
-  SLOTS.forEach(slot => {
-    const img = new Image();
-    img.onload = () => {
-      setPreview(slot.key, 'photos/'+slot.filename);
-      document.getElementById('status-'+slot.key).textContent = slot.group + ' · загружено на сайте';
-      document.getElementById('status-'+slot.key).className = 'pslot-status has-file';
-    };
-    img.src = 'photos/' + slot.filename + '?t=' + Date.now();
-  });
-}
-
-function pickFile(key) {
-  document.getElementById('file-'+key).click();
-}
-
-function handleFile(event, key) {
-  const file = event.target.files[0];
-  if (!file) return;
-  if (file.size > 8 * 1024 * 1024) { alert('Файл слишком большой. Максимум 8MB.'); return; }
-
-  const reader = new FileReader();
-  reader.onload = e => {
-    const img = new Image();
-    img.onload = () => {
-      // resize to max 1400px
-      const canvas = document.createElement('canvas');
-      const MAX = 1400;
-      let w = img.width, h = img.height;
-      if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      canvas.toBlob(blob => {
-        // revoke previous
-        if (pendingFiles[key]) URL.revokeObjectURL(pendingFiles[key].objectUrl);
-        const objectUrl = URL.createObjectURL(blob);
-        pendingFiles[key] = { blob, objectUrl };
-
-        setPreview(key, objectUrl);
-        const slot = SLOTS.find(s=>s.key===key);
-        const statusEl = document.getElementById('status-'+key);
-        statusEl.textContent = slot.group + ' · готово к скачиванию (' + Math.round(blob.size/1024) + ' KB)';
-        statusEl.className = 'pslot-status has-file';
-        document.getElementById('dl-'+key).classList.add('ready');
-
-        // show deploy hint
-        document.getElementById('deployHint').style.display = 'block';
-      }, 'image/jpeg', 0.85);
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
-function setPreview(key, src) {
-  const prev = document.getElementById('prev-'+key);
-  if (!prev) return;
-  let img = prev.querySelector('img');
-  if (!img) { img = document.createElement('img'); prev.innerHTML=''; prev.appendChild(img); }
-  img.src = src;
-}
-
-function downloadFile(key) {
-  const pf = pendingFiles[key];
-  if (!pf) return;
-  const slot = SLOTS.find(s=>s.key===key);
-  const a = document.createElement('a');
-  a.href = pf.objectUrl;
-  a.download = slot.filename;
-  a.click();
-}
-
-// download all prepared files at once
-function downloadAll() {
-  const keys = Object.keys(pendingFiles);
-  if (!keys.length) { alert('Нет подготовленных файлов.'); return; }
-  keys.forEach((key, i) => {
-    setTimeout(() => downloadFile(key), i * 300);
-  });
-}
-
-// ── EVENTS ──────────────────────────────────────────────────────────
-const statusOpts = [
-  {v:'open',l:'Запись открыта'},
-  {v:'few', l:'Мало мест'},
-  {v:'done',l:'Завершён'}
-];
-
-function renderEvents() {
-  const list = document.getElementById('eventList');
-  list.innerHTML = '';
-  events.forEach((ev,i) => {
-    const row = document.createElement('div');
-    row.className = 'event-row';
-    row.innerHTML =
-      '<div class="f"><div class="rl">День</div><input type="text" value="'+(ev.day||'')+'" placeholder="19" onchange="events['+i+'].day=this.value"></div>'+
-      '<div class="f"><div class="rl">Месяц</div><input type="text" value="'+(ev.month||'')+'" placeholder="Апр" onchange="events['+i+'].month=this.value"></div>'+
-      '<div class="f"><div class="rl">Название</div><input type="text" value="'+(ev.title||'')+'" placeholder="Квест «...»" onchange="events['+i+'].title=this.value"></div>'+
-      '<div class="f"><div class="rl">Время / место / длит.</div><input type="text" value="'+(ev.meta||'')+'" placeholder="Сб, 14:00 / Академгородок / ~2 ч" onchange="events['+i+'].meta=this.value"></div>'+
-      '<div class="f"><div class="rl">Занято / всего</div><input type="text" value="'+(ev.slots||'0/5')+'" placeholder="2/5" onchange="events['+i+'].slots=this.value"></div>'+
-      '<div class="f"><div class="rl">Статус</div><select onchange="events['+i+'].status=this.value">'+
-        statusOpts.map(s=>'<option value="'+s.v+'"'+(ev.status===s.v?' selected':'')+'>'+s.l+'</option>').join('')+
-      '</select></div>'+
-      '<button class="del-btn" onclick="removeEvent('+i+')">✕</button>';
-    list.appendChild(row);
-  });
-}
-function addEvent() { events.push({day:'',month:'',title:'',meta:'',slots:'0/5',status:'open'}); renderEvents(); }
-function removeEvent(i) { events.splice(i,1); renderEvents(); }
-
-// ── RECORDS ─────────────────────────────────────────────────────────
-function renderRecords() {
-  const list = document.getElementById('lbList');
-  list.innerHTML = '';
-  records.forEach((r,i) => {
-    const row = document.createElement('div');
-    row.className = 'lb-row-edit';
-    row.innerHTML =
-      '<div class="f"><div class="rl">Место</div><input type="number" value="'+(r.pos||i+1)+'" min="1" style="text-align:center;font-family:\'Oswald\',sans-serif;font-size:18px;font-weight:700;" onchange="records['+i+'].pos=+this.value"></div>'+
-      '<div class="f"><div class="rl">Имя / команда</div><input type="text" value="'+(r.name||'')+'" placeholder="Виктор А." onchange="records['+i+'].name=this.value"></div>'+
-      '<div class="f"><div class="rl">Квест</div><input type="text" value="'+(r.quest||'')+'" placeholder="Спасти Анатолия" onchange="records['+i+'].quest=this.value"></div>'+
-      '<div class="f"><div class="rl">Дата</div><input type="text" value="'+(r.date||'')+'" placeholder="18 апр 2026" onchange="records['+i+'].date=this.value"></div>'+
-      '<div class="f"><div class="rl">Очки</div><input type="number" value="'+(r.score||'')+'" placeholder="0" min="0" style="text-align:center;font-family:\'Oswald\',sans-serif;font-size:18px;font-weight:700;" onchange="records['+i+'].score=+this.value"></div>'+
-      '<button class="del-btn" onclick="removeRecord('+i+')">✕</button>';
-    list.appendChild(row);
-  });
-}
-function addRecord() { records.push({pos:records.length+1,name:'',quest:'',date:'',score:0}); renderRecords(); }
-function removeRecord(i) { records.splice(i,1); renderRecords(); }
-
-// ── LOAD ─────────────────────────────────────────────────────────────
-async function loadAll() {
+(async function() {
   let d = {};
-  try { d = (await binGet()).site || {}; } catch(e) {}
-
-  if (d.pricing) {
-    const p = d.pricing;
-    if (p.price1 != null)  document.getElementById('price1').value = p.price1;
-    if (p.price1sub)       document.getElementById('price1sub').value = p.price1sub;
-    if (p.price1inc)       document.getElementById('price1inc').value = p.price1inc;
-    if (p.price2 != null)  document.getElementById('price2').value = p.price2;
-    if (p.price2sub)       document.getElementById('price2sub').value = p.price2sub;
-    if (p.price2inc)       document.getElementById('price2inc').value = p.price2inc;
-    if (p.deposit != null) document.getElementById('deposit').value = p.deposit;
-    if (p.depositText)     document.getElementById('depositText').value = p.depositText;
-    if (p.priceNote)       document.getElementById('priceNote').value = p.priceNote;
-  }
-
-  events = Array.isArray(d.events) ? d.events : [
-    {day:'19',month:'Апр',title:'Квест «Найти базу»',meta:'Сб, 14:00 / Академгородок / ~2 ч',slots:'2/5',status:'open'},
-    {day:'26',month:'Апр',title:'Ночной квест',meta:'Сб, 20:00 / Нижняя Ельцовка / ~2.5 ч',slots:'4/5',status:'few'}
-  ];
-  renderEvents();
-
-  records = Array.isArray(d.records) ? d.records : [
-    {pos:1,name:'Виктор А.',quest:'Спасти Анатолия',date:'18 апр 2026',score:940},
-    {pos:2,name:'Максим Р.',quest:'Спасти Анатолия',date:'18 апр 2026',score:870},
-    {pos:3,name:'Денис К.', quest:'Спасти Анатолия',date:'18 апр 2026',score:810}
-  ];
-  renderRecords();
-
-  if (d.contacts) {
-    const c = d.contacts;
-    if (c.tg)         document.getElementById('tg').value = c.tg;
-    if (c.tgLink)     document.getElementById('tgLink').value = c.tgLink;
-    if (c.ig)         document.getElementById('ig').value = c.ig;
-    if (c.igLink)     document.getElementById('igLink').value = c.igLink;
-    if (c.phone)      document.getElementById('phone').value = c.phone;
-    if (c.city)       document.getElementById('city').value = c.city;
-    if (c.footerText) document.getElementById('footerText').value = c.footerText;
-  }
-}
-
-// ── SAVE (только данные, без фото) ───────────────────────────────────
-async function saveAll() {
-  const btn = document.getElementById('saveBtn');
-  if (btn) { btn.disabled=true; btn.textContent='Сохраняю...'; }
-
-  const sortedRecords = [...records].sort((a,b)=>b.score-a.score).map((r,i)=>({...r,pos:i+1}));
-
-  const data = {
-    pricing: {
-      price1:      +document.getElementById('price1').value,
-      price1sub:   document.getElementById('price1sub').value,
-      price1inc:   document.getElementById('price1inc').value,
-      price2:      +document.getElementById('price2').value,
-      price2sub:   document.getElementById('price2sub').value,
-      price2inc:   document.getElementById('price2inc').value,
-      deposit:     +document.getElementById('deposit').value,
-      depositText: document.getElementById('depositText').value,
-      priceNote:   document.getElementById('priceNote').value,
-    },
-    events,
-    records: sortedRecords,
-    contacts: {
-      tg:         document.getElementById('tg').value,
-      tgLink:     document.getElementById('tgLink').value,
-      ig:         document.getElementById('ig').value,
-      igLink:     document.getElementById('igLink').value,
-      phone:      document.getElementById('phone').value,
-      city:       document.getElementById('city').value,
-      footerText: document.getElementById('footerText').value,
-    }
-  };
-
   try {
-    await binSet(data);
-    if (btn) { btn.disabled=false; btn.textContent='Сохранить изменения'; }
-    const toast = document.getElementById('toast');
-    if (toast) { toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),2500); }
-    records = sortedRecords;
-    renderRecords();
-  } catch(e) {
-    if (btn) { btn.disabled=false; btn.textContent='Сохранить изменения'; }
-    alert('Ошибка сохранения: ' + e.message);
-  }
-}
+    const r = await fetch('https://api.jsonbin.io/v3/b/'+BIN_ID+'/latest',{headers:{'X-Master-Key':API_KEY}});
+    d = ((await r.json()).record||{}).site || {};
+  } catch(e) { return; }
+  if (!Object.keys(d).length) return;
 
-// ── NAV ──────────────────────────────────────────────────────────────
-const panelNames = {photos:'Фотографии',pricing:'Стоимость',events:'Ближайшие квесты',records:'Таблица рекордов',contacts:'Контакты'};
-function showPanel(id, btn) {
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.sb-item').forEach(b=>b.classList.remove('active'));
-  document.getElementById('panel-'+id).classList.add('active');
-  btn.classList.add('active');
-  const t = document.getElementById('topbarTitle');
-  if (t) t.textContent = panelNames[id]||id;
-  closeSidebar();
-}
-function openSidebar()  { document.getElementById('sidebar').classList.add('open');    document.getElementById('overlay').classList.add('show'); }
-function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
-
-// ── LOGIN ─────────────────────────────────────────────────────────────
-function doLogin() {
-  if (document.getElementById('pwInput').value === ADMIN_PASSWORD) {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
-    buildPhotoSlots();
-    loadAll();
-  } else {
-    document.getElementById('loginErr').style.display = 'block';
-    document.getElementById('pwInput').value = '';
+  // PRICING
+  if (d.pricing) {
+    const p=d.pricing, q=s=>document.querySelector(s);
+    if (p.price1)    { const e=q('.pcard:first-child .pamount'); if(e) e.innerHTML='<sup>₽</sup>'+p.price1.toLocaleString('ru'); }
+    if (p.price1sub) { const e=q('.pcard:first-child .psub');    if(e) e.textContent=p.price1sub; }
+    if (p.price1inc) { const e=q('.pcard:first-child .pinc');    if(e) e.innerHTML=nl2li(p.price1inc); }
+    if (p.price2)    { const e=q('.pcard.feat .pamount');        if(e) e.innerHTML='<sup>₽</sup>'+p.price2.toLocaleString('ru'); }
+    if (p.price2sub) { const e=q('.pcard.feat .psub');           if(e) e.textContent=p.price2sub; }
+    if (p.price2inc) { const e=q('.pcard.feat .pinc');           if(e) e.innerHTML=nl2li(p.price2inc); }
+    if (p.deposit||p.depositText) {
+      const e=q('.deposit p');
+      if(e) e.innerHTML='При получении модели берётся залог <strong>'+(p.deposit||3000).toLocaleString('ru')+' ₽</strong>. '+(p.depositText||'');
+    }
+    if (p.priceNote) { const e=q('.pnote'); if(e) e.textContent=p.priceNote; }
   }
-}
-function doLogout() {
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('pwInput').value = '';
-}
+
+  // EVENTS
+  if (d.events) {
+    const evArr=Array.isArray(d.events)?d.events:Object.values(d.events);
+    const con=document.querySelector('.events');
+    const tgL=(d.contacts&&d.contacts.tgLink)||'#';
+    if (con&&evArr.length) {
+      con.innerHTML='';
+      evArr.forEach(ev=>{
+        const sl=fmtSlots(ev.slots), st=sMap[ev.status]||sMap.open, done=ev.status==='done';
+        const meta=(ev.meta||'').split('/').map(s=>'<span>'+s.trim()+'</span>').join('');
+        con.innerHTML+=
+          '<div class="event"'+(done?' style="opacity:.4"':'')+'>'+
+            '<div class="edate">'+
+              '<div class="eday"'+(done?' style="color:var(--text-muted)"':'')+'>'+ev.day+'</div>'+
+              '<div class="emon"'+(done?' style="color:var(--text-dim)"':'')+'>'+ev.month+'</div>'+
+            '</div>'+
+            '<div>'+
+              '<div class="etitle"'+(done?' style="color:var(--text-muted)"':'')+'>'+ev.title+'</div>'+
+              '<div class="emeta">'+meta+'</div>'+
+              '<div class="estatus '+st.cls+'">'+st.label+'</div>'+
+            '</div>'+
+            '<div class="eslots">'+
+              '<div class="sbar"><div class="sfill" style="width:'+sl.pct+'%;'+(done?'background:var(--text-dim)':'')+'""></div></div>'+
+              '<div class="stext">'+sl.text+'</div>'+
+              (!done?'<a class="ereg" href="'+tgL+'" target="_blank">Записаться →</a>':'')+
+            '</div>'+
+          '</div>';
+      });
+    }
+  }
+
+  // LEADERBOARD
+  if (d.records) {
+    const arr=(Array.isArray(d.records)?d.records:Object.values(d.records)).sort((a,b)=>b.score-a.score);
+    const lb=document.querySelector('.lb');
+    if (lb&&arr.length) {
+      const head=lb.querySelector('.lb-head');
+      lb.innerHTML='';
+      if(head) lb.appendChild(head);
+      const cols=['var(--accent)','var(--text-muted)','var(--text-dim)'];
+      arr.forEach((r,i)=>{
+        lb.innerHTML+=
+          '<div class="lb-row">'+
+            '<div class="lb-pos" style="color:'+(cols[i]||'var(--text-dim)')+'">'+( i+1)+'</div>'+
+            '<div><div class="lb-name">'+(r.name||'')+'</div><div class="lb-date">'+(r.date||'')+'</div></div>'+
+            '<div class="lb-quest">'+(r.quest||'')+'</div>'+
+            '<div class="lb-score">'+(r.score||0)+'</div>'+
+          '</div>';
+      });
+    }
+  }
+
+  // CONTACTS
+  if (d.contacts) {
+    const c=d.contacts, tgL=c.tgLink||'#', igL=c.igLink||'#';
+    document.querySelectorAll('a.nav-cta,a.m-cta').forEach(el=>el.href=tgL);
+    document.querySelectorAll('a.btn-red').forEach(el=>{ if(el.href.includes('t.me')||el.getAttribute('href')==='#') el.href=tgL; });
+    const ch1=document.querySelector('.channel:nth-child(1)');
+    const ch2=document.querySelector('.channel:nth-child(2)');
+    const ch3=document.querySelector('.channel:nth-child(3)');
+    if(ch1){ ch1.href=tgL; const v=ch1.querySelector('.ch-v'); if(v&&c.tg) v.textContent='@'+c.tg; }
+    if(ch2){ ch2.href=igL; const v=ch2.querySelector('.ch-v'); if(v&&c.ig) v.textContent='@'+c.ig; }
+    if(ch3&&c.phone){ ch3.href='tel:'+c.phone.replace(/\D/g,''); const v=ch3.querySelector('.ch-v'); if(v) v.textContent=c.phone; }
+    if(c.city){ const fl=document.querySelector('.foot-logo'); if(fl) fl.innerHTML='<span>RC</span> Crawler Club — '+c.city; const lv=document.querySelector('.hero-live'); if(lv) lv.innerHTML='<div class="dot"></div>'+c.city+' — сезон открыт'; }
+    if(c.footerText){ const ft=document.querySelector('.foot-t'); if(ft) ft.textContent=c.footerText; }
+  }
+})();
 </script>
 </body>
 </html>
