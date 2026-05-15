@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RC Crawler Club — Панель управления</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red:#CC2200; --red-glow:rgba(204,34,0,0.1);
+    --bg:#0A0A0A; --bg2:#111; --bg3:#181818; --bg4:#1E1E1E;
+    --border:rgba(255,255,255,0.08); --border-hot:rgba(204,34,0,0.35);
+    --text:#F0EDE8; --muted:#888880; --dim:#444440;
+    --accent:#E8C060; --green:#4CAF50;
+  }
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'Roboto Condensed',sans-serif;font-size:15px;line-height:1.5;min-height:100vh;}
+
+  /* LOGIN */
+  .login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;
+    background-image:repeating-linear-gradient(0deg,transparent,transparent 79px,rgba(255,255,255,0.01) 79px,rgba(255,255,255,0.01) 80px),
+    repeating-linear-gradient(90deg,transparent,transparent 79px,rgba(255,255,255,0.01) 79px,rgba(255,255,255,0.01) 80px);}
+  .login-box{width:100%;max-width:340px;padding:0 20px;}
+  .login-logo{font-family:'Oswald',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:32px;}
+  .login-logo span{color:var(--red);}
+  .login-title{font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;text-transform:uppercase;margin-bottom:4px;}
+  .login-sub{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;margin-bottom:28px;}
+  .f{margin-bottom:12px;}
+  .f label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.14em;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;}
+  .f input,.f textarea,.f select{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Roboto Condensed',sans-serif;font-size:14px;padding:9px 11px;outline:none;transition:border-color .2s;-webkit-appearance:none;border-radius:0;}
+  .f input:focus,.f textarea:focus,.f select:focus{border-color:var(--red);}
+  .f textarea{resize:vertical;min-height:80px;}
+  .btn-login{width:100%;background:var(--red);border:2px solid var(--red);color:#fff;font-family:'Oswald',sans-serif;font-size:14px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:12px;cursor:pointer;transition:all .2s;margin-top:4px;}
+  .btn-login:hover{background:transparent;color:var(--red);}
+  .login-err{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);margin-top:10px;display:none;}
+
+  /* APP */
+  .app{display:none;min-height:100vh;}
+  .sidebar{position:fixed;top:0;left:0;bottom:0;width:212px;z-index:100;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;}
+  .sb-logo{padding:16px 16px 12px;border-bottom:1px solid var(--border);flex-shrink:0;}
+  .sb-logo-t{font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;}
+  .sb-logo-t span{color:var(--red);}
+  .sb-sub{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:0.1em;color:var(--dim);text-transform:uppercase;margin-top:2px;}
+  .sb-nav{padding:8px 0;flex:1;}
+  .sb-sec{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:0.14em;color:var(--dim);text-transform:uppercase;padding:10px 16px 4px;}
+  .sb-item{display:flex;align-items:center;gap:9px;padding:9px 16px;cursor:pointer;transition:all .2s;font-size:13px;color:var(--muted);border-left:2px solid transparent;border-top:none;border-right:none;border-bottom:none;background:none;width:100%;text-align:left;}
+  .sb-item:hover{background:var(--bg3);color:var(--text);}
+  .sb-item.active{background:var(--bg3);color:var(--text);border-left-color:var(--red);}
+  .sb-icon{font-size:13px;width:16px;text-align:center;}
+  .sb-foot{padding:12px 16px;border-top:1px solid var(--border);flex-shrink:0;}
+  .sb-foot button{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.1em;color:var(--dim);text-transform:uppercase;background:none;border:none;cursor:pointer;transition:color .2s;}
+  .sb-foot button:hover{color:var(--red);}
+
+  .main{margin-left:212px;min-height:100vh;}
+  .topbar{height:50px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 22px;gap:12px;position:sticky;top:0;z-index:50;}
+  .topbar-title{font-family:'Oswald',sans-serif;font-size:15px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;flex:1;}
+  .save-btn{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;background:var(--red);color:#fff;border:none;padding:7px 16px;cursor:pointer;transition:opacity .2s;}
+  .save-btn:hover{opacity:.85;}
+  .save-btn:disabled{opacity:.4;cursor:default;}
+  .toast{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.08em;color:var(--green);padding:5px 10px;border:1px solid rgba(76,175,80,.3);background:rgba(76,175,80,.08);opacity:0;transition:opacity .3s;white-space:nowrap;}
+  .toast.show{opacity:1;}
+
+  .content{padding:22px;}
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  /* CARDS */
+  .card{background:var(--bg2);border:1px solid var(--border);padding:18px 20px;margin-bottom:12px;}
+  .card-title{font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:14px;color:var(--muted);display:flex;align-items:center;gap:8px;}
+  .card-title::before{content:'';display:block;width:12px;height:1px;background:var(--red);}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media(max-width:580px){.row2{grid-template-columns:1fr;}}
+
+  /* PHOTO SLOTS */
+  .photo-slots{display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border);}
+  .pslot{background:var(--bg3);display:grid;grid-template-columns:56px 1fr auto auto;gap:0;align-items:stretch;min-height:56px;}
+  .pslot-preview{width:56px;background:var(--bg4);border-right:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;opacity:0.25;overflow:hidden;flex-shrink:0;}
+  .pslot-preview img{width:56px;height:56px;object-fit:cover;opacity:1;}
+  .pslot-info{padding:10px 14px;display:flex;flex-direction:column;justify-content:center;gap:3px;}
+  .pslot-name{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.08em;color:var(--text);}
+  .pslot-desc{font-size:12px;color:var(--muted);font-weight:300;}
+  .pslot-ratio{display:inline-flex;align-items:center;gap:6px;margin-top:4px;}
+  .pslot-ratio-badge{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.08em;color:var(--red);border:1px solid var(--border-hot);padding:2px 6px;background:var(--red-glow);white-space:nowrap;}
+  .pslot-ratio-tip{font-size:11px;color:var(--dim);font-weight:300;line-height:1.4;}
+  .pslot-status{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.08em;color:var(--dim);text-transform:uppercase;margin-top:4px;}
+  .pslot-status.has-file{color:var(--green);}
+  .pslot-actions{display:flex;align-items:center;gap:0;border-left:1px solid var(--border);}
+  .pslot-btn{height:100%;padding:0 14px;background:none;border:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;transition:all .2s;white-space:nowrap;border-right:1px solid var(--border);}
+  .pslot-btn:last-child{border-right:none;}
+  .pslot-btn.pick{color:var(--muted);}
+  .pslot-btn.pick:hover{color:var(--text);background:var(--bg4);}
+  .pslot-btn.dl{color:var(--red);display:none;}
+  .pslot-btn.dl:hover{background:var(--red-glow);}
+  .pslot-btn.dl.ready{display:block;}
+  .pslot input[type=file]{display:none;}
+
+  .deploy-hint{margin-top:16px;padding:16px 18px;border:1px solid var(--border-hot);background:var(--red-glow);}
+  .deploy-hint-title{font-family:'Oswald',sans-serif;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;color:var(--text);}
+  .deploy-steps{display:flex;flex-direction:column;gap:8px;}
+  .deploy-step{display:flex;gap:10px;align-items:flex-start;}
+  .ds-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--red);flex-shrink:0;padding-top:1px;}
+  .ds-text{font-size:13px;color:var(--muted);font-weight:300;line-height:1.5;}
+  .ds-text code{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text);background:var(--bg3);padding:1px 5px;}
+
+  /* EVENT ROWS */
+  .event-list{display:flex;flex-direction:column;gap:8px;}
+  .event-row{background:var(--bg3);border:1px solid var(--border);padding:12px;display:grid;gap:8px;grid-template-columns:60px 60px 1fr 1fr 76px 106px 28px;align-items:end;}
+  @media(max-width:960px){.event-row{grid-template-columns:1fr 1fr;}}
+  .event-row .f{margin-bottom:0;}
+  .rl{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:0.1em;color:var(--dim);text-transform:uppercase;margin-bottom:4px;}
+  .del-btn{width:28px;height:32px;background:var(--bg2);border:1px solid var(--border);color:var(--dim);font-size:13px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;align-self:flex-end;}
+  .del-btn:hover{border-color:var(--red);color:var(--red);}
+  .add-btn{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;background:transparent;color:var(--red);border:1px solid var(--border-hot);padding:7px 14px;cursor:pointer;transition:all .2s;margin-top:8px;}
+  .add-btn:hover{background:var(--red-glow);}
+
+  /* LEADERBOARD */
+  .lb-list{display:flex;flex-direction:column;gap:7px;}
+  .lb-row-edit{background:var(--bg3);border:1px solid var(--border);padding:14px 16px;display:grid;grid-template-columns:70px 1fr 1fr 110px 90px 32px;gap:10px;align-items:end;}
+  @media(max-width:780px){.lb-row-edit{grid-template-columns:1fr 1fr;}}
+  .lb-row-edit .f{margin-bottom:0;}
+
+  /* MOBILE */
+  .mob-topbar{display:none;}
+  .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:90;}
+  .overlay.show{display:block;}
+  @media(max-width:768px){
+    .sidebar{transform:translateX(-100%);transition:transform .3s;}
+    .sidebar.open{transform:translateX(0);}
+    .main{margin-left:0;}
+    .mob-topbar{display:flex;height:50px;background:var(--bg2);border-bottom:1px solid var(--border);align-items:center;padding:0 14px;gap:10px;position:sticky;top:0;z-index:50;}
+    .mob-logo{font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;flex:1;}
+    .mob-logo span{color:var(--red);}
+    .mob-burger{display:flex;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:4px;}
+    .mob-burger span{display:block;width:20px;height:1.5px;background:var(--text);}
+    .topbar{display:none;}
+    .content{padding:14px;}
+    .pslot{grid-template-columns:48px 1fr;}
+    .pslot-actions{display:none;}
+  }
+  select option{background:var(--bg3);}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo"><span>RC</span> Crawler Club</div>
+    <div class="login-title">Панель<br>управления</div>
+    <div class="login-sub">Введите пароль</div>
+    <div class="f"><label>Пароль</label><input type="password" id="pwInput" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn-login" onclick="doLogin()">Войти →</button>
+    <div class="login-err" id="loginErr">Неверный пароль</div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- APP -->
+<div class="app" id="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-t"><span>RC</span> Crawler Club</div>
+      <div class="sb-sub">Панель управления</div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-sec">Контент</div>
+      <button class="sb-item active" onclick="showPanel('photos',this)"><span class="sb-icon">🖼</span>Фотографии</button>
+      <button class="sb-item" onclick="showPanel('pricing',this)"><span class="sb-icon">💰</span>Стоимость</button>
+      <button class="sb-item" onclick="showPanel('events',this)"><span class="sb-icon">📅</span>Квесты</button>
+      <button class="sb-item" onclick="showPanel('records',this)"><span class="sb-icon">🏆</span>Таблица рекордов</button>
+      <button class="sb-item" onclick="showPanel('contacts',this)"><span class="sb-icon">📱</span>Контакты</button>
+    </nav>
+    <div class="sb-foot"><button onclick="doLogout()">Выйти</button></div>
+  </aside>
+
+  <div class="main">
+    <div class="mob-topbar">
+      <button class="mob-burger" onclick="openSidebar()"><span></span><span></span><span></span></button>
+      <div class="mob-logo"><span>RC</span> Crawler Club</div>
+      <button class="save-btn" onclick="saveAll()">Сохранить</button>
+    </div>
+    <div class="topbar">
+      <div class="topbar-title" id="topbarTitle">Фотографии</div>
+      <div class="toast" id="toast">Сохранено ✓</div>
+      <button class="save-btn" id="saveBtn" onclick="saveAll()">Сохранить изменения</button>
+    </div>
+
+    <div class="content">
+
+      <!-- PHOTOS -->
+      <div class="panel active" id="panel-photos">
+        <div class="card">
+          <div class="card-title">Загрузка фотографий</div>
+          <div class="photo-slots" id="photoSlots"></div>
+
+          <div class="deploy-hint" id="deployHint" style="display:none">
+            <div class="deploy-hint-title">Как обновить фото на сайте</div>
+            <div class="deploy-steps">
+              <div class="deploy-step"><div class="ds-num">1</div><div class="ds-text">Нажми <strong>Скачать</strong> рядом с каждым фото — файл сохранится с правильным именем автоматически</div></div>
+              <div class="deploy-step"><div class="ds-num">2</div><div class="ds-text">Все скачанные файлы собери в папку <code>photos</code></div></div>
+              <div class="deploy-step"><div class="ds-num">3</div><div class="ds-text">Открой <a href="https://app.netlify.com" target="_blank" style="color:var(--red)">app.netlify.com</a> → твой сайт → вкладка <strong>Deploys</strong></div></div>
+              <div class="deploy-step"><div class="ds-num">4</div><div class="ds-text">Перетащи всю папку с сайтом (включая папку <code>photos</code>) в окно деплоя</div></div>
+              <div class="deploy-step"><div class="ds-num">5</div><div class="ds-text">Через 30 секунд фото появятся на сайте</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Что такое папка photos/</div>
+          <p style="font-size:13px;color:var(--muted);line-height:1.7;font-weight:300">
+            Все фото сайта хранятся в папке <code style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text);background:var(--bg3);padding:1px 5px">photos/</code> рядом с файлами сайта на Netlify.
+            Имена файлов строго фиксированы — <code style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text);background:var(--bg3);padding:1px 5px">hero.jpg</code>, <code style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text);background:var(--bg3);padding:1px 5px">about0.jpg</code> и т.д.
+            Панель сама переименовывает твой файл при скачивании — тебе не нужно ничего переименовывать вручную.
+          </p>
+        </div>
+      </div>
+
+      <!-- PRICING -->
+      <div class="panel" id="panel-pricing">
+        <div class="card">
+          <div class="card-title">Тариф «Своя машина»</div>
+          <div class="row2">
+            <div class="f"><label>Цена (₽)</label><input type="number" id="price1" value="800"></div>
+            <div class="f"><label>Подзаголовок</label><input type="text" id="price1sub" value="Приезжаешь со своей RC-техникой"></div>
+          </div>
+          <div class="f" style="margin-top:10px"><label>Что включено (каждый пункт с новой строки)</label>
+            <textarea id="price1inc" rows="5">Участие в квесте на своей машине
+Организатор-ведущий, который сопровождает и считает баллы
+Фотографии с квеста
+Трасса, чекпойнты и все задания
+Попадание в таблицу рекордов</textarea>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Тариф «Аренда модели»</div>
+          <div class="row2">
+            <div class="f"><label>Цена (₽)</label><input type="number" id="price2" value="1800"></div>
+            <div class="f"><label>Подзаголовок</label><input type="text" id="price2sub" value="Мы выдаём RC-внедорожник на время квеста"></div>
+          </div>
+          <div class="f" style="margin-top:10px"><label>Что включено (каждый пункт с новой строки)</label>
+            <textarea id="price2inc" rows="4">Готовая к бою RC-модель
+Пульт и всё необходимое
+Инструктаж по управлению
+Всё из тарифа «Своя машина»</textarea>
+          </div>
+          <div class="row2" style="margin-top:10px">
+            <div class="f"><label>Залог (₽)</label><input type="number" id="deposit" value="3000"></div>
+            <div class="f"><label>Текст про залог</label><input type="text" id="depositText" value="Возвращается после квеста при отсутствии повреждений по вине участника."></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Сноска под ценами</div>
+          <div class="f"><input type="text" id="priceNote" value="* Цены ориентировочные. Уточняй актуальную стоимость при записи через Telegram."></div>
+        </div>
+      </div>
+
+      <!-- EVENTS -->
+      <div class="panel" id="panel-events">
+        <div class="card">
+          <div class="card-title">Список квестов</div>
+          <div class="event-list" id="eventList"></div>
+          <button class="add-btn" onclick="addEvent()">+ Добавить квест</button>
+        </div>
+      </div>
+
+      <!-- RECORDS -->
+      <div class="panel" id="panel-records">
+        <div class="card">
+          <div class="card-title">Таблица рекордов</div>
+          <div class="lb-list" id="lbList"></div>
+          <button class="add-btn" onclick="addRecord()">+ Добавить запись</button>
+        </div>
+      </div>
+
+      <!-- CONTACTS -->
+      <div class="panel" id="panel-contacts">
+        <div class="card">
+          <div class="card-title">Telegram</div>
+          <div class="row2">
+            <div class="f"><label>Никнейм (без @)</label><input type="text" id="tg" placeholder="your_telegram_nick"></div>
+            <div class="f"><label>Ссылка (https://t.me/...)</label><input type="text" id="tgLink" placeholder="https://t.me/your_nick"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Instagram</div>
+          <div class="row2">
+            <div class="f"><label>Никнейм (без @)</label><input type="text" id="ig" placeholder="your_instagram_nick"></div>
+            <div class="f"><label>Ссылка</label><input type="text" id="igLink" placeholder="https://instagram.com/your_nick"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Прочее</div>
+          <div class="row2">
+            <div class="f"><label>Город</label><input type="text" id="city" value="Новосибирск"></div>
+            <div class="f"><label>Подпись в футере</label><input type="text" id="footerText" value="Офроад квесты на радиоуправляемых внедорожниках"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────
+const API_KEY = '$2a$10$nJosV.HW72Yt3FbSTXHV5eQJTNoHUoflvtWbVnuyzEXBLFFUjB.Ty';
+const BIN_ID  = '69de69c136566621a8b213bb';
+const ADMIN_PASSWORD = '89118590029'; // ← ЗАМЕНИ на свой пароль
+
+// ── PHOTO SLOTS CONFIG ──────────────────────────────────────────────
+const SLOTS = [
+  // hero: занимает половину экрана по высоте, вертикальное на мобиле
+  { key:'hero',   filename:'hero.jpg',   desc:'Главное фото — машина на препятствии крупным планом',   group:'Герой',     ratio:'3:4 или 1:1', ratioTip:'Снимай вертикально или квадратно. Верх и низ обрезаются — главное в центре кадра.' },
+  // about0: широкий баннер на всю ширину коллажа
+  { key:'about0', filename:'about0.jpg', desc:'Широкий план — машина в лесу или на трассе',              group:'О квестах', ratio:'16:9 или шире', ratioTip:'Горизонтальный кадр, широкий. Высота небольшая — снимай с запасом по бокам.' },
+  // about1, about2: маленькие квадратные ячейки
+  { key:'about1', filename:'about1.jpg', desc:'Пилот с пультом в руках',                                group:'О квестах', ratio:'1:1 (квадрат)',  ratioTip:'Квадратный кадр. Снимай по центру — бока обрезаются.' },
+  { key:'about2', filename:'about2.jpg', desc:'Колесо в грязи — крупный план',                          group:'О квестах', ratio:'1:1 (квадрат)',  ratioTip:'Квадратный кадр. Снимай по центру — бока обрезаются.' },
+  // strip: три одинаковые горизонтальные полосы, невысокие
+  { key:'strip0', filename:'strip0.jpg', desc:'Общий вид трассы',                                       group:'Полоса',    ratio:'16:9 или шире', ratioTip:'Горизонтальный широкий кадр. Полоса низкая — снимай с запасом сверху и снизу.' },
+  { key:'strip1', filename:'strip1.jpg', desc:'Машина на подъёме',                                      group:'Полоса',    ratio:'16:9 или шире', ratioTip:'Горизонтальный широкий кадр. Полоса низкая — снимай с запасом сверху и снизу.' },
+  { key:'strip2', filename:'strip2.jpg', desc:'Группа участников',                                      group:'Полоса',    ratio:'16:9 или шире', ratioTip:'Горизонтальный широкий кадр. Полоса низкая — снимай с запасом сверху и снизу.' },
+  // gal0: большая ячейка, занимает две строки галереи — вертикальная
+  { key:'gal0',   filename:'gal0.jpg',   desc:'Машина на сложном вертикальном препятствии',             group:'Галерея',   ratio:'2:3 (вертикаль)', ratioTip:'Вертикальный кадр. Снимай с запасом — по высоте занимает много места.' },
+  // gal1-gal4: маленькие квадратные ячейки
+  { key:'gal1',   filename:'gal1.jpg',   desc:'Участники на финише',                                    group:'Галерея',   ratio:'1:1 (квадрат)',   ratioTip:'Квадратный кадр. Снимай по центру — бока обрезаются.' },
+  { key:'gal2',   filename:'gal2.jpg',   desc:'Экран чекпойнта с таймером',                             group:'Галерея',   ratio:'1:1 (квадрат)',   ratioTip:'Квадратный кадр. Снимай по центру — бока обрезаются.' },
+  { key:'gal3',   filename:'gal3.jpg',   desc:'Вид на трассу сверху / с дрона',                         group:'Галерея',   ratio:'1:1 (квадрат)',   ratioTip:'Квадратный кадр. Снимай по центру — бока обрезаются.' },
+  { key:'gal4',   filename:'gal4.jpg',   desc:'Машина в броде или луже — эффектный момент',             group:'Галерея',   ratio:'1:1 (квадрат)',   ratioTip:'Квадратный кадр. Снимай по центру — бока обрезаются.' },
+];
+
+// ── STATE ───────────────────────────────────────────────────────────
+const pendingFiles = {}; // key → { blob, objectUrl }
+let events = [];
+let records = [];
+
+// ── JSONBIN ─────────────────────────────────────────────────────────
+async function binGet() {
+  const r = await fetch('https://api.jsonbin.io/v3/b/'+BIN_ID+'/latest',{headers:{'X-Master-Key':API_KEY}});
+  return (await r.json()).record || {};
+}
+async function binSet(data) {
+  const current = await binGet();
+  await fetch('https://api.jsonbin.io/v3/b/'+BIN_ID,{
+    method:'PUT',
+    headers:{'Content-Type':'application/json','X-Master-Key':API_KEY},
+    body: JSON.stringify({...current, site: data})
+  });
+}
+
+// ── BUILD PHOTO SLOTS ────────────────────────────────────────────────
+function buildPhotoSlots() {
+  const container = document.getElementById('photoSlots');
+  container.innerHTML = '';
+  SLOTS.forEach(slot => {
+    const row = document.createElement('div');
+    row.className = 'pslot';
+    row.id = 'pslot-' + slot.key;
+    row.innerHTML =
+      '<div class="pslot-preview" id="prev-'+slot.key+'">📷</div>'+
+      '<div class="pslot-info">'+
+        '<div class="pslot-name">'+slot.filename+'</div>'+
+        '<div class="pslot-desc">'+slot.desc+'</div>'+
+        '<div class="pslot-ratio">'+
+          '<span class="pslot-ratio-badge">'+slot.ratio+'</span>'+
+          '<span class="pslot-ratio-tip">'+slot.ratioTip+'</span>'+
+        '</div>'+
+        '<div class="pslot-status" id="status-'+slot.key+'">'+slot.group+' · нет файла</div>'+
+      '</div>'+
+      '<div class="pslot-actions">'+
+        '<button class="pslot-btn pick" onclick="pickFile(\''+slot.key+'\')">Выбрать</button>'+
+        '<button class="pslot-btn dl" id="dl-'+slot.key+'" onclick="downloadFile(\''+slot.key+'\')">Скачать</button>'+
+      '</div>'+
+      '<input type="file" id="file-'+slot.key+'" accept="image/*" onchange="handleFile(event,\''+slot.key+'\')">';
+    container.appendChild(row);
+  });
+
+  // check which photos already exist on the site
+  SLOTS.forEach(slot => {
+    const img = new Image();
+    img.onload = () => {
+      setPreview(slot.key, 'photos/'+slot.filename);
+      document.getElementById('status-'+slot.key).textContent = slot.group + ' · загружено на сайте';
+      document.getElementById('status-'+slot.key).className = 'pslot-status has-file';
+    };
+    img.src = 'photos/' + slot.filename + '?t=' + Date.now();
+  });
+}
+
+function pickFile(key) {
+  document.getElementById('file-'+key).click();
+}
+
+function handleFile(event, key) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.size > 8 * 1024 * 1024) { alert('Файл слишком большой. Максимум 8MB.'); return; }
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      // resize to max 1400px
+      const canvas = document.createElement('canvas');
+      const MAX = 1400;
+      let w = img.width, h = img.height;
+      if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      canvas.toBlob(blob => {
+        // revoke previous
+        if (pendingFiles[key]) URL.revokeObjectURL(pendingFiles[key].objectUrl);
+        const objectUrl = URL.createObjectURL(blob);
+        pendingFiles[key] = { blob, objectUrl };
+
+        setPreview(key, objectUrl);
+        const slot = SLOTS.find(s=>s.key===key);
+        const statusEl = document.getElementById('status-'+key);
+        statusEl.textContent = slot.group + ' · готово к скачиванию (' + Math.round(blob.size/1024) + ' KB)';
+        statusEl.className = 'pslot-status has-file';
+        document.getElementById('dl-'+key).classList.add('ready');
+
+        // show deploy hint
+        document.getElementById('deployHint').style.display = 'block';
+      }, 'image/jpeg', 0.85);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function setPreview(key, src) {
+  const prev = document.getElementById('prev-'+key);
+  if (!prev) return;
+  let img = prev.querySelector('img');
+  if (!img) { img = document.createElement('img'); prev.innerHTML=''; prev.appendChild(img); }
+  img.src = src;
+}
+
+function downloadFile(key) {
+  const pf = pendingFiles[key];
+  if (!pf) return;
+  const slot = SLOTS.find(s=>s.key===key);
+  const a = document.createElement('a');
+  a.href = pf.objectUrl;
+  a.download = slot.filename;
+  a.click();
+}
+
+// download all prepared files at once
+function downloadAll() {
+  const keys = Object.keys(pendingFiles);
+  if (!keys.length) { alert('Нет подготовленных файлов.'); return; }
+  keys.forEach((key, i) => {
+    setTimeout(() => downloadFile(key), i * 300);
+  });
+}
+
+// ── EVENTS ──────────────────────────────────────────────────────────
+const statusOpts = [
+  {v:'open',l:'Запись открыта'},
+  {v:'few', l:'Мало мест'},
+  {v:'done',l:'Завершён'}
+];
+
+function renderEvents() {
+  const list = document.getElementById('eventList');
+  list.innerHTML = '';
+  events.forEach((ev,i) => {
+    const row = document.createElement('div');
+    row.className = 'event-row';
+    row.innerHTML =
+      '<div class="f"><div class="rl">День</div><input type="text" value="'+(ev.day||'')+'" placeholder="19" onchange="events['+i+'].day=this.value"></div>'+
+      '<div class="f"><div class="rl">Месяц</div><input type="text" value="'+(ev.month||'')+'" placeholder="Апр" onchange="events['+i+'].month=this.value"></div>'+
+      '<div class="f"><div class="rl">Название</div><input type="text" value="'+(ev.title||'')+'" placeholder="Квест «...»" onchange="events['+i+'].title=this.value"></div>'+
+      '<div class="f"><div class="rl">Время / место / длит.</div><input type="text" value="'+(ev.meta||'')+'" placeholder="Сб, 14:00 / Академгородок / ~2 ч" onchange="events['+i+'].meta=this.value"></div>'+
+      '<div class="f"><div class="rl">Занято / всего</div><input type="text" value="'+(ev.slots||'0/5')+'" placeholder="2/5" onchange="events['+i+'].slots=this.value"></div>'+
+      '<div class="f"><div class="rl">Статус</div><select onchange="events['+i+'].status=this.value">'+
+        statusOpts.map(s=>'<option value="'+s.v+'"'+(ev.status===s.v?' selected':'')+'>'+s.l+'</option>').join('')+
+      '</select></div>'+
+      '<button class="del-btn" onclick="removeEvent('+i+')">✕</button>';
+    list.appendChild(row);
+  });
+}
+function addEvent() { events.push({day:'',month:'',title:'',meta:'',slots:'0/5',status:'open'}); renderEvents(); }
+function removeEvent(i) { events.splice(i,1); renderEvents(); }
+
+// ── RECORDS ─────────────────────────────────────────────────────────
+function renderRecords() {
+  const list = document.getElementById('lbList');
+  list.innerHTML = '';
+  records.forEach((r,i) => {
+    const row = document.createElement('div');
+    row.className = 'lb-row-edit';
+    row.innerHTML =
+      '<div class="f"><div class="rl">Место</div><input type="number" value="'+(r.pos||i+1)+'" min="1" style="text-align:center;font-family:\'Oswald\',sans-serif;font-size:18px;font-weight:700;" onchange="records['+i+'].pos=+this.value"></div>'+
+      '<div class="f"><div class="rl">Имя / команда</div><input type="text" value="'+(r.name||'')+'" placeholder="Виктор А." onchange="records['+i+'].name=this.value"></div>'+
+      '<div class="f"><div class="rl">Квест</div><input type="text" value="'+(r.quest||'')+'" placeholder="Спасти Анатолия" onchange="records['+i+'].quest=this.value"></div>'+
+      '<div class="f"><div class="rl">Дата</div><input type="text" value="'+(r.date||'')+'" placeholder="18 апр 2026" onchange="records['+i+'].date=this.value"></div>'+
+      '<div class="f"><div class="rl">Очки</div><input type="number" value="'+(r.score||'')+'" placeholder="0" min="0" style="text-align:center;font-family:\'Oswald\',sans-serif;font-size:18px;font-weight:700;" onchange="records['+i+'].score=+this.value"></div>'+
+      '<button class="del-btn" onclick="removeRecord('+i+')">✕</button>';
+    list.appendChild(row);
+  });
+}
+function addRecord() { records.push({pos:records.length+1,name:'',quest:'',date:'',score:0}); renderRecords(); }
+function removeRecord(i) { records.splice(i,1); renderRecords(); }
+
+// ── LOAD ─────────────────────────────────────────────────────────────
+async function loadAll() {
+  let d = {};
+  try { d = (await binGet()).site || {}; } catch(e) {}
+
+  if (d.pricing) {
+    const p = d.pricing;
+    if (p.price1 != null)  document.getElementById('price1').value = p.price1;
+    if (p.price1sub)       document.getElementById('price1sub').value = p.price1sub;
+    if (p.price1inc)       document.getElementById('price1inc').value = p.price1inc;
+    if (p.price2 != null)  document.getElementById('price2').value = p.price2;
+    if (p.price2sub)       document.getElementById('price2sub').value = p.price2sub;
+    if (p.price2inc)       document.getElementById('price2inc').value = p.price2inc;
+    if (p.deposit != null) document.getElementById('deposit').value = p.deposit;
+    if (p.depositText)     document.getElementById('depositText').value = p.depositText;
+    if (p.priceNote)       document.getElementById('priceNote').value = p.priceNote;
+  }
+
+  events = Array.isArray(d.events) ? d.events : [
+    {day:'19',month:'Апр',title:'Квест «Найти базу»',meta:'Сб, 14:00 / Академгородок / ~2 ч',slots:'2/5',status:'open'},
+    {day:'26',month:'Апр',title:'Ночной квест',meta:'Сб, 20:00 / Нижняя Ельцовка / ~2.5 ч',slots:'4/5',status:'few'}
+  ];
+  renderEvents();
+
+  records = Array.isArray(d.records) ? d.records : [
+    {pos:1,name:'Виктор А.',quest:'Спасти Анатолия',date:'18 апр 2026',score:940},
+    {pos:2,name:'Максим Р.',quest:'Спасти Анатолия',date:'18 апр 2026',score:870},
+    {pos:3,name:'Денис К.', quest:'Спасти Анатолия',date:'18 апр 2026',score:810}
+  ];
+  renderRecords();
+
+  if (d.contacts) {
+    const c = d.contacts;
+    if (c.tg)         document.getElementById('tg').value = c.tg;
+    if (c.tgLink)     document.getElementById('tgLink').value = c.tgLink;
+    if (c.ig)         document.getElementById('ig').value = c.ig;
+    if (c.igLink)     document.getElementById('igLink').value = c.igLink;
+    if (c.city)       document.getElementById('city').value = c.city;
+    if (c.footerText) document.getElementById('footerText').value = c.footerText;
+  }
+}
+
+// ── SAVE (только данные, без фото) ───────────────────────────────────
+async function saveAll() {
+  const btn = document.getElementById('saveBtn');
+  if (btn) { btn.disabled=true; btn.textContent='Сохраняю...'; }
+
+  const sortedRecords = [...records].sort((a,b)=>b.score-a.score).map((r,i)=>({...r,pos:i+1}));
+
+  const data = {
+    pricing: {
+      price1:      +document.getElementById('price1').value,
+      price1sub:   document.getElementById('price1sub').value,
+      price1inc:   document.getElementById('price1inc').value,
+      price2:      +document.getElementById('price2').value,
+      price2sub:   document.getElementById('price2sub').value,
+      price2inc:   document.getElementById('price2inc').value,
+      deposit:     +document.getElementById('deposit').value,
+      depositText: document.getElementById('depositText').value,
+      priceNote:   document.getElementById('priceNote').value,
+    },
+    events,
+    records: sortedRecords,
+    contacts: {
+      tg:         document.getElementById('tg').value,
+      tgLink:     document.getElementById('tgLink').value,
+      ig:         document.getElementById('ig').value,
+      igLink:     document.getElementById('igLink').value,
+      city:       document.getElementById('city').value,
+      footerText: document.getElementById('footerText').value,
+    }
+  };
+
+  try {
+    await binSet(data);
+    if (btn) { btn.disabled=false; btn.textContent='Сохранить изменения'; }
+    const toast = document.getElementById('toast');
+    if (toast) { toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),2500); }
+    records = sortedRecords;
+    renderRecords();
+  } catch(e) {
+    if (btn) { btn.disabled=false; btn.textContent='Сохранить изменения'; }
+    alert('Ошибка сохранения: ' + e.message);
+  }
+}
+
+// ── NAV ──────────────────────────────────────────────────────────────
+const panelNames = {photos:'Фотографии',pricing:'Стоимость',events:'Ближайшие квесты',records:'Таблица рекордов',contacts:'Контакты'};
+function showPanel(id, btn) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  btn.classList.add('active');
+  const t = document.getElementById('topbarTitle');
+  if (t) t.textContent = panelNames[id]||id;
+  closeSidebar();
+}
+function openSidebar()  { document.getElementById('sidebar').classList.add('open');    document.getElementById('overlay').classList.add('show'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
+
+// ── LOGIN ─────────────────────────────────────────────────────────────
+function doLogin() {
+  if (document.getElementById('pwInput').value === ADMIN_PASSWORD) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    buildPhotoSlots();
+    loadAll();
+  } else {
+    document.getElementById('loginErr').style.display = 'block';
+    document.getElementById('pwInput').value = '';
+  }
+}
+function doLogout() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('pwInput').value = '';
+}
+</script>
+</body>
+</html>
