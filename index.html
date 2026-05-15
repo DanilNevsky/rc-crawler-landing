@@ -398,17 +398,17 @@
     <div class="event">
       <div class="edate"><div class="eday">19</div><div class="emon">Апр</div></div>
       <div><div class="etitle">Квест «Найти базу»</div><div class="emeta"><span>Сб, 14:00</span><span>Академгородок</span><span>~2 ч</span></div><div class="estatus s-open">Запись открыта</div></div>
-      <div class="eslots"><div class="sbar"><div class="sfill" style="width:40%"></div></div><div class="stext">2 / 5 мест</div><a class="ereg" href="https://t.me/YOUR_TELEGRAM" target="_blank">Записаться →</a></div>
+      <div class="eslots"><div class="sbar"><div class="sfill" style="width:40%"></div></div><div class="stext">2 / 5 мест</div><a class="ereg" href="#" onclick="openModal(event)">Записаться →</a></div>
     </div>
     <div class="event">
       <div class="edate"><div class="eday">26</div><div class="emon">Апр</div></div>
       <div><div class="etitle">Ночной квест</div><div class="emeta"><span>Сб, 20:00</span><span>Нижняя Ельцовка</span><span>~2.5 ч</span></div><div class="estatus s-few">Мало мест</div></div>
-      <div class="eslots"><div class="sbar"><div class="sfill" style="width:80%"></div></div><div class="stext">4 / 5 мест</div><a class="ereg" href="https://t.me/YOUR_TELEGRAM" target="_blank">Записаться →</a></div>
+      <div class="eslots"><div class="sbar"><div class="sfill" style="width:80%"></div></div><div class="stext">4 / 5 мест</div><a class="ereg" href="#" onclick="openModal(event)">Записаться →</a></div>
     </div>
     <div class="event">
       <div class="edate"><div class="eday">10</div><div class="emon">Май</div></div>
       <div><div class="etitle">Командный квест</div><div class="emeta"><span>Вс, 12:00</span><span>TBD</span><span>~3 ч</span></div><div class="estatus s-open">Запись открыта</div></div>
-      <div class="eslots"><div class="sbar"><div class="sfill" style="width:0%"></div></div><div class="stext">0 / 8 мест</div><a class="ereg" href="https://t.me/YOUR_TELEGRAM" target="_blank">Записаться →</a></div>
+      <div class="eslots"><div class="sbar"><div class="sfill" style="width:0%"></div></div><div class="stext">0 / 8 мест</div><a class="ereg" href="#" onclick="openModal(event)">Записаться →</a></div>
     </div>
     <div class="event" style="opacity:.4">
       <div class="edate"><div class="eday" style="color:var(--text-muted)">18</div><div class="emon" style="color:var(--text-dim)">Апр</div></div>
@@ -513,7 +513,7 @@
 <!-- MODAL — выбор способа связи -->
 <div class="modal-overlay" id="signupModal" onclick="closeModal(event)">
   <div class="modal">
-    <button class="modal-close" onclick="document.getElementById('signupModal').classList.remove('open')">✕</button>
+    <button class="modal-close" onclick="closeModalForce()">✕</button>
     <div class="modal-label">Запись на квест</div>
     <div class="modal-title">Как с нами<br>связаться?</div>
     <a class="modal-btn" id="modalTg" href="#" target="_blank">
@@ -552,7 +552,11 @@ function closeModal(e) {
   document.getElementById('signupModal').classList.remove('open');
   document.body.style.overflow = '';
 }
-document.addEventListener('keydown', e => { if(e.key==='Escape') { document.getElementById('signupModal').classList.remove('open'); document.body.style.overflow=''; } });
+function closeModalForce() {
+  document.getElementById('signupModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeModalForce(); });
 
 // ── nav burger ──
 const burger = document.getElementById('burger');
@@ -665,7 +669,7 @@ const sMap = {
             '<div class="eslots">'+
               '<div class="sbar"><div class="sfill" style="width:'+sl.pct+'%;'+(done?'background:var(--text-dim)':'')+'""></div></div>'+
               '<div class="stext">'+sl.text+'</div>'+
-              (!done?'<a class="ereg" href="'+tgL+'" target="_blank">Записаться →</a>':'')+
+              (!done?'<a class="ereg" href="#" onclick="openModal(event)">Записаться →</a>':'')+
             '</div>'+
           '</div>';
       });
