@@ -216,7 +216,24 @@
   .ch-arr { margin-left: auto; color: var(--text-dim); font-size: 15px; transition: color .2s; }
   .channel:hover .ch-arr { color: var(--red); }
 
-  /* FOOTER */
+  /* MODAL */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:500; align-items:center; justify-content:center; padding:20px; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--bg2); border:1px solid var(--border); width:100%; max-width:360px; padding:28px 24px; position:relative; }
+  .modal-label { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.18em; color:var(--red); text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .modal-label::before { content:''; display:block; width:14px; height:1px; background:var(--red); }
+  .modal-title { font-family:'Oswald',sans-serif; font-size:22px; font-weight:700; text-transform:uppercase; margin-bottom:20px; line-height:1; }
+  .modal-btn { display:flex; align-items:center; gap:14px; padding:16px 18px; border:1px solid var(--border); background:var(--bg3); text-decoration:none; color:var(--text); transition:all .2s; margin-bottom:8px; }
+  .modal-btn:hover { border-color:var(--red); background:var(--red-glow); }
+  .modal-btn:last-of-type { margin-bottom:0; }
+  .modal-btn-icon { font-size:20px; flex-shrink:0; width:36px; height:36px; display:flex; align-items:center; justify-content:center; background:var(--red-glow); border:1px solid var(--border-hot); }
+  .modal-btn-text { flex:1; }
+  .modal-btn-label { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.12em; color:var(--text-muted); text-transform:uppercase; display:block; margin-bottom:2px; }
+  .modal-btn-val { font-family:'Oswald',sans-serif; font-size:16px; font-weight:600; }
+  .modal-btn-arr { color:var(--text-dim); font-size:16px; }
+  .modal-btn:hover .modal-btn-arr { color:var(--red); }
+  .modal-close { position:absolute; top:14px; right:14px; background:none; border:none; color:var(--text-muted); font-size:18px; cursor:pointer; line-height:1; padding:4px 8px; transition:color .2s; }
+  .modal-close:hover { color:var(--text); }
   footer { background: var(--bg); border-top: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 6px; align-items: center; text-align: center; }
   @media (min-width: 600px) { footer { flex-direction: row; justify-content: space-between; padding: 20px 48px; } }
   .foot-logo { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
@@ -236,7 +253,7 @@
     <li><a href="#records">Рекорды</a></li>
     <li><a href="#faq">FAQ</a></li>
   </ul>
-  <a class="nav-cta" href="https://t.me/YOUR_TELEGRAM" target="_blank">Записаться →</a>
+  <a class="nav-cta" href="#" onclick="openModal(event)">Записаться →</a>
   <button class="nav-burger" id="burger" aria-label="Меню"><span></span><span></span><span></span></button>
 </nav>
 
@@ -248,7 +265,7 @@
   <a href="#records" onclick="closeMenu()">Таблица рекордов</a>
   <a href="#faq" onclick="closeMenu()">FAQ</a>
   <a href="#contact" onclick="closeMenu()">Контакты</a>
-  <a href="https://t.me/YOUR_TELEGRAM" target="_blank" class="m-cta">Записаться →</a>
+  <a href="#" onclick="openModal(event)" class="m-cta">Записаться →</a>
 </div>
 
 <!-- HERO -->
@@ -259,7 +276,7 @@
     <h1 class="hero-title">Офроад<br><span class="r">квест</span><br><span class="o">RC</span> club</h1>
     <p class="hero-sub">Радиоуправляемые внедорожники. Реальные препятствия. Настоящий азарт. Приезжай со своей машиной — или возьми нашу.</p>
     <div class="hero-actions">
-      <a class="btn btn-red" href="#calendar">Ближайший квест →</a>
+      <a class="btn btn-red" href="#" onclick="openModal(event)">Ближайший квест →</a>
       <a class="btn btn-ghost" href="#about">Что это такое?</a>
     </div>
     <div class="scroll-hint"><div class="sh-line"></div><div class="sh-t">scroll</div></div>
@@ -471,7 +488,7 @@
   <div class="contact-grid">
     <div>
       <p class="contact-lead">Все вопросы, запись на квест и актуальное расписание — в Telegram. Отвечаем быстро. Если есть своя RC-техника, расскажи о ней при записи — поможем с подготовкой.</p>
-      <a class="btn btn-red" href="https://t.me/YOUR_TELEGRAM" target="_blank">Написать в Telegram →</a>
+      <a class="btn btn-red" href="#" onclick="openModal(event)">Написать в Telegram →</a>
     </div>
     <div class="channels">
       <a class="channel" href="https://t.me/YOUR_TELEGRAM" target="_blank">
@@ -481,7 +498,12 @@
       </a>
       <a class="channel" href="https://instagram.com/YOUR_INSTAGRAM" target="_blank">
         <div class="ch-icon">◎</div>
-        <div><span class="ch-l">Instagram</span><span class="ch-v">@YOUR_INSTAGRAM</span></div>
+        <div><span class="ch-l">Нельзяграм</span><span class="ch-v">@YOUR_INSTAGRAM</span></div>
+        <span class="ch-arr">→</span>
+      </a>
+      <a class="channel" id="ch-phone" href="tel:YOUR_PHONE">
+        <div class="ch-icon">☎</div>
+        <div><span class="ch-l">Телефон</span><span class="ch-v" id="ch-phone-val">+7 (XXX) XXX-XX-XX</span></div>
         <span class="ch-arr">→</span>
       </a>
       <a class="channel" id="ch-phone" href="tel:YOUR_PHONE" target="_blank">
@@ -493,12 +515,50 @@
   </div>
 </section>
 
+<!-- MODAL — выбор способа связи -->
+<div class="modal-overlay" id="signupModal" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('signupModal').classList.remove('open')">✕</button>
+    <div class="modal-label">Запись на квест</div>
+    <div class="modal-title">Как с нами<br>связаться?</div>
+    <a class="modal-btn" id="modalTg" href="#" target="_blank">
+      <div class="modal-btn-icon">✈</div>
+      <div class="modal-btn-text">
+        <span class="modal-btn-label">Telegram</span>
+        <span class="modal-btn-val" id="modalTgVal">Написать</span>
+      </div>
+      <span class="modal-btn-arr">→</span>
+    </a>
+    <a class="modal-btn" id="modalPhone" href="#" style="display:none">
+      <div class="modal-btn-icon">☎</div>
+      <div class="modal-btn-text">
+        <span class="modal-btn-label">Позвонить</span>
+        <span class="modal-btn-val" id="modalPhoneVal">+7 (XXX) XXX-XX-XX</span>
+      </div>
+      <span class="modal-btn-arr">→</span>
+    </a>
+  </div>
+</div>
+
 <footer>
   <div class="foot-logo"><span>RC</span> Crawler Club — Новосибирск</div>
   <div class="foot-t">Офроад квесты на радиоуправляемых внедорожниках</div>
 </footer>
 
 <script>
+// ── modal ──
+function openModal(e) {
+  if(e) e.preventDefault();
+  document.getElementById('signupModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(e) {
+  if(e && e.target !== document.getElementById('signupModal')) return;
+  document.getElementById('signupModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if(e.key==='Escape') { document.getElementById('signupModal').classList.remove('open'); document.body.style.overflow=''; } });
+
 // ── nav burger ──
 const burger = document.getElementById('burger');
 const menu = document.getElementById('mobileMenu');
@@ -641,8 +701,16 @@ const sMap = {
   // CONTACTS
   if (d.contacts) {
     const c=d.contacts, tgL=c.tgLink||'#', igL=c.igLink||'#';
-    document.querySelectorAll('a.nav-cta,a.m-cta').forEach(el=>el.href=tgL);
-    document.querySelectorAll('a.btn-red').forEach(el=>{ if(el.href.includes('t.me')||el.getAttribute('href')==='#') el.href=tgL; });
+    // modal
+    const mTg=document.getElementById('modalTg'), mTgVal=document.getElementById('modalTgVal');
+    if(mTg) mTg.href=tgL;
+    if(mTgVal&&c.tg) mTgVal.textContent='@'+c.tg;
+    if(c.phone){
+      const mPhone=document.getElementById('modalPhone'), mPhoneVal=document.getElementById('modalPhoneVal');
+      if(mPhone){ mPhone.href='tel:'+c.phone.replace(/\D/g,''); mPhone.style.display='flex'; }
+      if(mPhoneVal) mPhoneVal.textContent=c.phone;
+    }
+    // channels block
     const ch1=document.querySelector('.channel:nth-child(1)');
     const ch2=document.querySelector('.channel:nth-child(2)');
     const ch3=document.querySelector('.channel:nth-child(3)');
