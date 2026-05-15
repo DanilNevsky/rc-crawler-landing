@@ -290,6 +290,10 @@
           </div>
         </div>
         <div class="card">
+          <div class="card-title">Телефон</div>
+          <div class="f"><label>Номер (в любом формате)</label><input type="text" id="phone" placeholder="+7 (911) 859-00-29"></div>
+        </div>
+        <div class="card">
           <div class="card-title">Прочее</div>
           <div class="row2">
             <div class="f"><label>Город</label><input type="text" id="city" value="Новосибирск"></div>
@@ -543,6 +547,7 @@ async function loadAll() {
     if (c.tgLink)     document.getElementById('tgLink').value = c.tgLink;
     if (c.ig)         document.getElementById('ig').value = c.ig;
     if (c.igLink)     document.getElementById('igLink').value = c.igLink;
+    if (c.phone)      document.getElementById('phone').value = c.phone;
     if (c.city)       document.getElementById('city').value = c.city;
     if (c.footerText) document.getElementById('footerText').value = c.footerText;
   }
@@ -574,6 +579,7 @@ async function saveAll() {
       tgLink:     document.getElementById('tgLink').value,
       ig:         document.getElementById('ig').value,
       igLink:     document.getElementById('igLink').value,
+      phone:      document.getElementById('phone').value,
       city:       document.getElementById('city').value,
       footerText: document.getElementById('footerText').value,
     }
