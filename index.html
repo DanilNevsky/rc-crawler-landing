@@ -484,6 +484,11 @@
         <div><span class="ch-l">Instagram</span><span class="ch-v">@YOUR_INSTAGRAM</span></div>
         <span class="ch-arr">→</span>
       </a>
+      <a class="channel" id="ch-phone" href="tel:YOUR_PHONE" target="_blank">
+        <div class="ch-icon">☎</div>
+        <div><span class="ch-l">Телефон</span><span class="ch-v" id="ch-phone-val">+7 (XXX) XXX-XX-XX</span></div>
+        <span class="ch-arr">→</span>
+      </a>
     </div>
   </div>
 </section>
@@ -640,8 +645,10 @@ const sMap = {
     document.querySelectorAll('a.btn-red').forEach(el=>{ if(el.href.includes('t.me')||el.getAttribute('href')==='#') el.href=tgL; });
     const ch1=document.querySelector('.channel:nth-child(1)');
     const ch2=document.querySelector('.channel:nth-child(2)');
+    const ch3=document.querySelector('.channel:nth-child(3)');
     if(ch1){ ch1.href=tgL; const v=ch1.querySelector('.ch-v'); if(v&&c.tg) v.textContent='@'+c.tg; }
     if(ch2){ ch2.href=igL; const v=ch2.querySelector('.ch-v'); if(v&&c.ig) v.textContent='@'+c.ig; }
+    if(ch3&&c.phone){ ch3.href='tel:'+c.phone.replace(/\D/g,''); const v=ch3.querySelector('.ch-v'); if(v) v.textContent=c.phone; }
     if(c.city){ const fl=document.querySelector('.foot-logo'); if(fl) fl.innerHTML='<span>RC</span> Crawler Club — '+c.city; const lv=document.querySelector('.hero-live'); if(lv) lv.innerHTML='<div class="dot"></div>'+c.city+' — сезон открыт'; }
     if(c.footerText){ const ft=document.querySelector('.foot-t'); if(ft) ft.textContent=c.footerText; }
   }
